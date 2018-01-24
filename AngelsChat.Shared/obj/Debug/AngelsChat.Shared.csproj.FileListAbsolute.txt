@@ -1,0 +1,12 @@
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Shared\bin\Debug\AngelsChat.Shared.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Shared\bin\Debug\AngelsChat.Shared.pdb
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Shared\obj\Debug\AngelsChat.Shared.csproj.CoreCompileInputs.cache
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Shared\obj\Debug\AngelsChat.Shared.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Shared\obj\Debug\AngelsChat.Shared.pdb
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Shared\obj\Debug\AngelsChat.Shared.csprojResolveAssemblyReference.cache
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Shared\bin\Debug\AngelsChat.Shared.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Shared\bin\Debug\AngelsChat.Shared.pdb
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Shared\obj\Debug\AngelsChat.Shared.csprojResolveAssemblyReference.cache
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Shared\obj\Debug\AngelsChat.Shared.csproj.CoreCompileInputs.cache
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Shared\obj\Debug\AngelsChat.Shared.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Shared\obj\Debug\AngelsChat.Shared.pdb

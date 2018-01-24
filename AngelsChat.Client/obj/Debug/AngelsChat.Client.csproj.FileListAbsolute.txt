@@ -1,0 +1,20 @@
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Client\bin\Debug\AngelsChat.Client.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Client\bin\Debug\AngelsChat.Client.pdb
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Client\bin\Debug\AngelsChat.Shared.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Client\bin\Debug\NLog.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Client\bin\Debug\AngelsChat.Shared.pdb
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Client\bin\Debug\NLog.xml
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Client\obj\Debug\AngelsChat.Client.csprojResolveAssemblyReference.cache
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Client\obj\Debug\AngelsChat.Client.csproj.CoreCompileInputs.cache
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Client\obj\Debug\AngelsChat.Client.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Client\obj\Debug\AngelsChat.Client.pdb
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Client\bin\Debug\AngelsChat.Client.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Client\bin\Debug\AngelsChat.Client.pdb
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Client\bin\Debug\AngelsChat.Shared.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Client\bin\Debug\NLog.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Client\bin\Debug\AngelsChat.Shared.pdb
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Client\bin\Debug\NLog.xml
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Client\obj\Debug\AngelsChat.Client.csprojResolveAssemblyReference.cache
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Client\obj\Debug\AngelsChat.Client.csproj.CoreCompileInputs.cache
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Client\obj\Debug\AngelsChat.Client.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Client\obj\Debug\AngelsChat.Client.pdb

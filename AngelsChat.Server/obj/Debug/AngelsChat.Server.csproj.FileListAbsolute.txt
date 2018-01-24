@@ -1,0 +1,52 @@
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\bin\Debug\AngelsChat.Server.dll.config
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\bin\Debug\AngelsChat.Server.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\bin\Debug\AngelsChat.Server.pdb
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\bin\Debug\AngelsChat.Shared.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\bin\Debug\EntityFramework.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\bin\Debug\NLog.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\bin\Debug\AngelsChat.Shared.pdb
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\bin\Debug\EntityFramework.xml
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\bin\Debug\NLog.xml
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\obj\Debug\AngelsChat.Server.csprojResolveAssemblyReference.cache
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\obj\Debug\AngelsChat.Server.Migrations.init.resources
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\obj\Debug\AngelsChat.Server.Migrations.userImage.resources
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\obj\Debug\AngelsChat.Server.Migrations.userImageNew.resources
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\obj\Debug\AngelsChat.Server.Migrations.refactoring.resources
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\obj\Debug\AngelsChat.Server.Migrations.registration.resources
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\obj\Debug\AngelsChat.Server.Migrations.DateTime.resources
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\obj\Debug\AngelsChat.Server.Migrations.fileMessage.resources
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\obj\Debug\AngelsChat.Server.csproj.GenerateResource.Cache
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\obj\Debug\AngelsChat.Server.csproj.CoreCompileInputs.cache
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\obj\Debug\AngelsChat.Server.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\obj\Debug\AngelsChat.Server.pdb
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat\AngelsChat.Server\obj\Debug\AngelsChat.Server.Migrations.video.resources
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\bin\Debug\AngelsChat.Server.dll.config
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\bin\Debug\AngelsChat.Server.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\bin\Debug\AngelsChat.Server.pdb
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\bin\Debug\AngelsChat.Shared.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\bin\Debug\EntityFramework.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\bin\Debug\NLog.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\bin\Debug\AngelsChat.Shared.pdb
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\bin\Debug\EntityFramework.xml
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\bin\Debug\NLog.xml
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\obj\Debug\AngelsChat.Server.csprojResolveAssemblyReference.cache
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\obj\Debug\AngelsChat.Server.Migrations.init.resources
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\obj\Debug\AngelsChat.Server.Migrations.userImage.resources
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\obj\Debug\AngelsChat.Server.Migrations.userImageNew.resources
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\obj\Debug\AngelsChat.Server.Migrations.refactoring.resources
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\obj\Debug\AngelsChat.Server.Migrations.registration.resources
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\obj\Debug\AngelsChat.Server.Migrations.DateTime.resources
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\obj\Debug\AngelsChat.Server.Migrations.fileMessage.resources
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\obj\Debug\AngelsChat.Server.Migrations.video.resources
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\obj\Debug\AngelsChat.Server.Migrations.VideoList.resources
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\obj\Debug\AngelsChat.Server.Migrations.BinaryVideoData.resources
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\obj\Debug\AngelsChat.Server.Migrations.BinaryVideoData2.resources
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\obj\Debug\AngelsChat.Server.Migrations.BinaryVideoData3.resources
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\obj\Debug\AngelsChat.Server.csproj.GenerateResource.Cache
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\obj\Debug\AngelsChat.Server.csproj.CoreCompileInputs.cache
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\obj\Debug\AngelsChat.Server.dll
+C:\Users\kit00\Documents\Visual Studio 2017\Projects\AngelsChat — копия\AngelsChat.Server\obj\Debug\AngelsChat.Server.pdb
