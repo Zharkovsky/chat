@@ -20,18 +20,18 @@
 
 2) Запустить AngelsChat.WpfServerConfiguratorApp (с админскими правами)
 
-2.1) Установить следующие конфигурации:
+2.1) Установить следующие конфигурации: Ip: localhost         port: 9080
 
-Ip: localhost
-port: 9080
-БД: Каталог - (localdb)\MSSQLLocalDB
-        Имя - chatdatabase
+БД: Каталог - (localdb)\MSSQLLocalDB     Имя - chatdatabase
 
 3) Запустить AngelsChat.ConsoleServer (с админскими правами)
 
 4) Запустить клиент (можно несколько)
+
 4.1) Нажать шестеренку в верхнем левом углу и установить параметры   Ip: localhost       port: 9080
+
 4.2) Зарегистрироваться
+
 4.3) Авторизоваться
 
 **Особенности работы**
