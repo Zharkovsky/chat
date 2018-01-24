@@ -19,6 +19,7 @@
 1) Сбилдить проекты
 
 2) Запустить AngelsChat.WpfServerConfiguratorApp (с админскими правами)
+
 2.1) Установить следующие конфигурации:
 
 Ip: localhost
