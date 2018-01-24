@@ -1,0 +1,65 @@
+﻿<Window x:Class="AngelsChat.WpfClientApp.MainWindow"
+        x:Name="Main"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AngelsChat.WpfClientApp"
+        xmlns:views="clr-namespace:AngelsChat.WpfClientApp.Views"
+        xmlns:vm="clr-namespace:AngelsChat.WpfClientApp.ViewModels"
+        xmlns:UserControl="clr-namespace:AngelsChat.WpfClientApp"
+        mc:Ignorable="d"
+        Height="500" Width="625" Title="{Binding LoginVM.UserName, StringFormat=AngelsChat ({0})}" Background="Black" Foreground="#888888">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:LoginViewModel}">
+            <views:LoginView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ChatViewModel}">
+            <views:ChatView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:PhotoViewModel}">
+            <views:PhotoView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SignUpViewModel}">
+            <views:SignUpView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+            <views:SettingsView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SendFileViewModel}">
+            <views:SendFileView />
+        </DataTemplate>
+
+        <ContextMenu x:Key="TrayMenu">
+            <MenuItem Header="Свернуть" Click="ShowHideMainWindow" />
+            <CheckBox Content="Включить уведомления" Click="ShowHideTip"/>
+            <Separator />
+            <MenuItem Header="Выйти из учетной записи"  Click="Logout"/>
+            <MenuItem Header="Выход" Click="MenuExitClick" />
+        </ContextMenu>
+    </Window.Resources>
+    
+    <Grid>
+        <ContentControl Content="{Binding Body}"/>
+
+        <Grid>
+            <!--Видимость-->
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ErrorViewModel.ErrorFlag}" Value="true">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ErrorViewModel.ErrorFlag}" Value="false">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
+            <views:ErrorView DataContext="{Binding ErrorViewModel}" />
+        </Grid>
+       
+    </Grid>
+</Window>

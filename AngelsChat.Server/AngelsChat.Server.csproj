@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B252CD63-6AA5-4694-912C-782485D4F6C5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AngelsChat.Server</RootNamespace>
+    <AssemblyName>AngelsChat.Server</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.11\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ContractImplementations\IContract.cs" />
+    <Compile Include="ContractImplementations\ServerContract.cs" />
+    <Compile Include="Core\HexEncoding.cs" />
+    <Compile Include="Data\Entities\FileMessage.cs" />
+    <Compile Include="Data\Video.cs" />
+    <Compile Include="Migrations\201708021203153_fileMessage.cs" />
+    <Compile Include="Migrations\201708021203153_fileMessage.Designer.cs">
+      <DependentUpon>201708021203153_fileMessage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711041934314_video.cs" />
+    <Compile Include="Migrations\201711041934314_video.Designer.cs">
+      <DependentUpon>201711041934314_video.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801231709335_VideoList.cs" />
+    <Compile Include="Migrations\201801231709335_VideoList.Designer.cs">
+      <DependentUpon>201801231709335_VideoList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801231754145_BinaryVideoData.cs" />
+    <Compile Include="Migrations\201801231754145_BinaryVideoData.Designer.cs">
+      <DependentUpon>201801231754145_BinaryVideoData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801231807335_BinaryVideoData2.cs" />
+    <Compile Include="Migrations\201801231807335_BinaryVideoData2.Designer.cs">
+      <DependentUpon>201801231807335_BinaryVideoData2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801231830023_BinaryVideoData3.cs" />
+    <Compile Include="Migrations\201801231830023_BinaryVideoData3.Designer.cs">
+      <DependentUpon>201801231830023_BinaryVideoData3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\Settings.cs" />
+    <Compile Include="Data\Context.cs" />
+    <Compile Include="Data\Entities\Image.cs" />
+    <Compile Include="Core\MainServer.cs" />
+    <Compile Include="Data\Entities\Message.cs" />
+    <Compile Include="Migrations\201707171210001_userImage.cs" />
+    <Compile Include="Migrations\201707171210001_userImage.Designer.cs">
+      <DependentUpon>201707171210001_userImage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201707181015073_userImageNew.cs" />
+    <Compile Include="Migrations\201707181015073_userImageNew.Designer.cs">
+      <DependentUpon>201707181015073_userImageNew.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201707190859001_refactoring.cs" />
+    <Compile Include="Migrations\201707190859001_refactoring.Designer.cs">
+      <DependentUpon>201707190859001_refactoring.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201707191314319_registration.cs" />
+    <Compile Include="Migrations\201707191314319_registration.Designer.cs">
+      <DependentUpon>201707191314319_registration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201707211317016_DateTime.cs" />
+    <Compile Include="Migrations\201707211317016_DateTime.Designer.cs">
+      <DependentUpon>201707211317016_DateTime.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Data\ServerHost.cs" />
+    <Compile Include="Migrations\201707101306161_init.cs" />
+    <Compile Include="Migrations\201707101306161_init.Designer.cs">
+      <DependentUpon>201707101306161_init.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ContractImplementations\UserContract.cs" />
+    <Compile Include="Data\Entities\User.cs" />
+    <Compile Include="Settings\ConnectionSettings.cs" />
+    <Compile Include="Settings\EfSettings.cs" />
+    <Compile Include="Settings\LogSettings.cs" />
+    <Compile Include="Settings\SettingsPath.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AngelsChat.Shared\AngelsChat.Shared.csproj">
+      <Project>{dd037795-5373-4e2c-8f1c-82ce77c2b770}</Project>
+      <Name>AngelsChat.Shared</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201707101306161_init.resx">
+      <DependentUpon>201707101306161_init.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707171210001_userImage.resx">
+      <DependentUpon>201707171210001_userImage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707181015073_userImageNew.resx">
+      <DependentUpon>201707181015073_userImageNew.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707190859001_refactoring.resx">
+      <DependentUpon>201707190859001_refactoring.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707191314319_registration.resx">
+      <DependentUpon>201707191314319_registration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707211317016_DateTime.resx">
+      <DependentUpon>201707211317016_DateTime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708021203153_fileMessage.resx">
+      <DependentUpon>201708021203153_fileMessage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711041934314_video.resx">
+      <DependentUpon>201711041934314_video.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801231709335_VideoList.resx">
+      <DependentUpon>201801231709335_VideoList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801231754145_BinaryVideoData.resx">
+      <DependentUpon>201801231754145_BinaryVideoData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801231807335_BinaryVideoData2.resx">
+      <DependentUpon>201801231807335_BinaryVideoData2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801231830023_BinaryVideoData3.resx">
+      <DependentUpon>201801231830023_BinaryVideoData3.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

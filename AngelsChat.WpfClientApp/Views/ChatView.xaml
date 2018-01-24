@@ -1,0 +1,472 @@
+﻿<UserControl 
+    x:Class="AngelsChat.WpfClientApp.Views.ChatView"
+    x:Name="ChatControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:AngelsChat.WpfClientApp"
+    xmlns:views="clr-namespace:AngelsChat.WpfClientApp.Views"
+    xmlns:helper="clr-namespace:AngelsChat.WpfClientApp.Helpers"
+    xmlns:vm="clr-namespace:AngelsChat.WpfClientApp.ViewModels"
+    xmlns:shared="clr-namespace:AngelsChat.Shared.Data;assembly=AngelsChat.Shared"
+    xmlns:ui="clr-namespace:Emgu.CV.UI;assembly=Emgu.CV.UI"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    mc:Ignorable="d" 
+    d:DesignHeight="500" d:DesignWidth="625">
+
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type vm:MessageViewModel}">
+            <views:MessageView/>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid Background="Black">
+        <Grid.Resources>
+            <helper:ImageConverter x:Key="imageConverter"/>
+            <helper:VideoConverter x:Key="videoConverter" />
+            <helper:MessageDateConverter x:Key="messageDateConverter" />
+
+            <!--Scroll style-->
+                <SolidColorBrush x:Key="StandardBorderBrush" Color="#888" />
+                <SolidColorBrush x:Key="StandardBackgroundBrush" Color="Black" />
+                <SolidColorBrush x:Key="HoverBorderBrush" Color="#DDD" />
+                <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="Gray" />
+                <SolidColorBrush x:Key="SelectedForegroundBrush" Color="White" />
+                <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
+                <SolidColorBrush x:Key="NormalBrush" Color="#888" />
+                <SolidColorBrush x:Key="NormalBorderBrush" Color="#888" />
+                <SolidColorBrush x:Key="HorizontalNormalBrush" Color="#747474" />
+                <SolidColorBrush x:Key="HorizontalNormalBorderBrush" Color="#888" />
+                <LinearGradientBrush x:Key="ListBoxBackgroundBrush" StartPoint="0,0" EndPoint="1,0.001">
+                    <GradientBrush.GradientStops>
+                        <GradientStopCollection>
+                            <GradientStop Color="White" Offset="0.0" />
+                            <GradientStop Color="White" Offset="0.6" />
+                            <GradientStop Color="#DDDDDD" Offset="1.2"/>
+                        </GradientStopCollection>
+                    </GradientBrush.GradientStops>
+                </LinearGradientBrush>
+                <LinearGradientBrush x:Key="StandardBrush" StartPoint="0,0" EndPoint="0,1">
+                    <GradientBrush.GradientStops>
+                        <GradientStopCollection>
+                            <GradientStop Color="#FFF" Offset="0.0"/>
+                            <GradientStop Color="#CCC" Offset="1.0"/>
+                        </GradientStopCollection>
+                    </GradientBrush.GradientStops>
+                </LinearGradientBrush>
+                <SolidColorBrush x:Key="GlyphBrush" Color="#444" />
+                <LinearGradientBrush x:Key="PressedBrush" StartPoint="0,0" EndPoint="0,1">
+                    <GradientBrush.GradientStops>
+                        <GradientStopCollection>
+                            <GradientStop Color="#BBB" Offset="0.0"/>
+                            <GradientStop Color="#EEE" Offset="0.1"/>
+                            <GradientStop Color="#EEE" Offset="0.9"/>
+                            <GradientStop Color="#FFF" Offset="1.0"/>
+                        </GradientStopCollection>
+                    </GradientBrush.GradientStops>
+                </LinearGradientBrush>
+
+                <Style x:Key="ScrollBarLineButton" TargetType="{x:Type RepeatButton}">
+                    <Setter Property="Visibility" Value="Hidden"/>
+                    <Setter Property="SnapsToDevicePixels" Value="True"/>
+                    <Setter Property="OverridesDefaultStyle" Value="true"/>
+                    <Setter Property="Focusable" Value="false"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type RepeatButton}">
+                                <Border Name="Border" Margin="1" CornerRadius="2" Background="{StaticResource NormalBrush}" 
+                                    BorderBrush="{StaticResource NormalBorderBrush}" BorderThickness="1">
+                                    <Path HorizontalAlignment="Center" VerticalAlignment="Center" Fill="{StaticResource GlyphBrush}" 
+                                      Data="{Binding Path=Content, RelativeSource={RelativeSource TemplatedParent}}" />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsPressed" Value="true">
+                                        <Setter TargetName="Border" Property="Background" Value="{StaticResource PressedBrush}" />
+                                    </Trigger>
+                                    <Trigger Property="IsEnabled" Value="false">
+                                        <Setter Property="Foreground" Value="{StaticResource DisabledForegroundBrush}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+                <Style x:Key="ScrollBarPageButton" TargetType="{x:Type RepeatButton}">
+                    <Setter Property="Visibility" Value="Hidden"/>
+                    <Setter Property="SnapsToDevicePixels" Value="True"/>
+                    <Setter Property="OverridesDefaultStyle" Value="true"/>
+                    <Setter Property="IsTabStop" Value="false"/>
+                    <Setter Property="Focusable" Value="false"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type RepeatButton}">
+                                <Border Background="Black" />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+                <Style x:Key="ScrollBarThumb" TargetType="{x:Type Thumb}">
+                    <Setter Property="SnapsToDevicePixels" Value="True"/>
+                    <Setter Property="OverridesDefaultStyle" Value="true"/>
+                    <Setter Property="IsTabStop" Value="false"/>
+                    <Setter Property="Focusable" Value="false"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Thumb}">
+                                <Border CornerRadius="2" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                        BorderThickness="0"  Width="8" Margin="8,0,-2,0"/>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+                <ControlTemplate x:Key="VerticalScrollBar" TargetType="{x:Type ScrollBar}">
+                    <Grid >
+                        <Grid.RowDefinitions>
+                            <RowDefinition MaxHeight="0"/>
+                            <RowDefinition Height="0.00001*"/>
+                            <RowDefinition MaxHeight="0"/>
+                        </Grid.RowDefinitions>
+                        <Border Grid.RowSpan="3" CornerRadius="2" Background="Transparent" />
+                        <RepeatButton Grid.Row="0" Style="{StaticResource ScrollBarLineButton}" Height="18" Command="ScrollBar.LineUpCommand" Content="M 0 4 L 8 4 L 4 0 Z" />
+                        <Track Name="PART_Track" Grid.Row="1" IsDirectionReversed="true">
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton Style="{StaticResource ScrollBarPageButton}" Command="ScrollBar.PageUpCommand" />
+                            </Track.DecreaseRepeatButton>
+                            <Track.Thumb>
+                                <Thumb Style="{StaticResource ScrollBarThumb}" Margin="1,0,1,0" 
+                                       Background="{StaticResource HorizontalNormalBrush}" BorderBrush="{StaticResource HorizontalNormalBorderBrush}" />
+                            </Track.Thumb>
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton Style="{StaticResource ScrollBarPageButton}" Command="ScrollBar.PageDownCommand" />
+                            </Track.IncreaseRepeatButton>
+                        </Track>
+                        <RepeatButton Grid.Row="3" Style="{StaticResource ScrollBarLineButton}" Height="18" Command="ScrollBar.LineDownCommand" Content="M 0 0 L 4 4 L 8 0 Z"/>
+                    </Grid>
+                </ControlTemplate>
+                <ControlTemplate x:Key="HorizontalScrollBar" TargetType="{x:Type ScrollBar}">
+                    <Grid >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition MaxWidth="18"/>
+                            <ColumnDefinition Width="0.00001*"/>
+                            <ColumnDefinition MaxWidth="18"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.ColumnSpan="3" CornerRadius="2" Background="#F0F0F0" />
+                        <RepeatButton Grid.Column="0" Style="{StaticResource ScrollBarLineButton}" Width="18" Command="ScrollBar.LineLeftCommand" Content="M 4 0 L 4 8 L 0 4 Z" />
+                        <Track Name="PART_Track" Grid.Column="1" IsDirectionReversed="False">
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton Style="{StaticResource ScrollBarPageButton}" Command="ScrollBar.PageLeftCommand" />
+                            </Track.DecreaseRepeatButton>
+                            <Track.Thumb>
+                                <Thumb Style="{StaticResource ScrollBarThumb}" Margin="0,1,0,1" Background="{StaticResource NormalBrush}" BorderBrush="{StaticResource NormalBorderBrush}" />
+                            </Track.Thumb>
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton Style="{StaticResource ScrollBarPageButton}" Command="ScrollBar.PageRightCommand" />
+                            </Track.IncreaseRepeatButton>
+                        </Track>
+                        <RepeatButton Grid.Column="3" Style="{StaticResource ScrollBarLineButton}" Width="18" Command="ScrollBar.LineRightCommand" Content="M 0 0 L 4 4 L 0 8 Z"/>
+                    </Grid>
+                </ControlTemplate>
+            
+                <Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
+                    <Setter Property="SnapsToDevicePixels" Value="True"/>
+                    <Setter Property="OverridesDefaultStyle" Value="true"/>
+                    <Style.Triggers>
+                        <Trigger Property="Orientation" Value="Horizontal">
+                            <Setter Property="Width" Value="Auto"/>
+                            <Setter Property="Height" Value="18" />
+                            <Setter Property="Template" Value="{StaticResource HorizontalScrollBar}" />
+                        </Trigger>
+                        <Trigger Property="Orientation" Value="Vertical">
+                            <Setter Property="Width" Value="18"/>
+                            <Setter Property="Height" Value="Auto" />
+                            <Setter Property="Template" Value="{StaticResource VerticalScrollBar}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+
+                <Style x:Key="FavsScrollViewer" TargetType="{x:Type ScrollViewer}">
+                    <Setter Property="OverridesDefaultStyle" Value="True"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <ScrollContentPresenter Grid.Column="1"/>
+
+                                    <ScrollBar Name="PART_VerticalScrollBar"
+                                               Value="{TemplateBinding VerticalOffset}"
+                                               Maximum="{TemplateBinding ScrollableHeight}"
+                                               ViewportSize="{TemplateBinding ViewportHeight}"
+                                               Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"/>
+                                    <ScrollBar Name="PART_HorizontalScrollBar" Orientation="Horizontal" Grid.Row="1" Grid.Column="1"
+                                               Value="{TemplateBinding HorizontalOffset}"
+                                               Maximum="{TemplateBinding ScrollableWidth}"
+                                               ViewportSize="{TemplateBinding ViewportWidth}"
+                                               Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"/>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            <!--End scroll style-->
+
+            <LinearGradientBrush x:Key="GrayBlueGradientBrush" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#393939" Offset="0" />
+                <GradientStop Color="#393939" Offset="0.5" />
+                <GradientStop Color="#393939" Offset="1" />
+            </LinearGradientBrush>
+
+            <Style TargetType="{x:Type Button}">
+                <Setter Property="Background" Value="{StaticResource GrayBlueGradientBrush}" />
+            </Style>
+        </Grid.Resources>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="125"/>
+            <ColumnDefinition MaxWidth="150"/>
+        </Grid.ColumnDefinitions>
+        
+        <Grid x:Name="Chat" Grid.Column="0">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="90"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <!--Панель пользователя-->
+            <Grid x:Name="UserPanel" Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MaxWidth="50" />
+                    <ColumnDefinition MinWidth="90"/>
+                    <ColumnDefinition MaxWidth="100"/>
+                </Grid.ColumnDefinitions>
+
+                <!--Левая панель-->
+                <Grid Grid.Column="0" x:Name="Image">
+                    <!--Кнопки управления-->
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" x:Name="PhotoButton">
+                        <Button Command="{Binding MakePhoto}">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="BorderBrush" Value="Transparent" />
+                                </Style>
+                            </Button.Style>
+                            <Image Source="../Resources/photo.png" Visibility="Visible"/>
+                        </Button>
+                    </Grid>
+                    <Grid Grid.Row="1" x:Name="VideoButton">
+                        <Button Command="{Binding MakeVideo}">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="BorderBrush" Value="Transparent" />
+                                </Style>
+                            </Button.Style>
+                            <Image Source="../Resources/video.png" Visibility="Visible"/>
+                        </Button>
+                    </Grid>
+                </Grid>
+
+                <!--Окно ввода-->
+                <TextBox Grid.Column="1" Text="{Binding EnteredMessage, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" FontSize="18" Background="Black" Foreground="#888888">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding SendMessage}" CommandParameter="{Binding EnteredMessage}" />
+                    </TextBox.InputBindings>
+                </TextBox>
+
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Button Grid.Row="0" Content="Отправить" Command="{Binding SendMessage}" CommandParameter="{Binding EnteredMessage}" FontSize="14" Foreground="#888888"/>
+                    <Button Grid.Row="1" Content="Файл" Command="{Binding SendFileMessage}" FontSize="14" Foreground="#888888"/>
+                </Grid>
+
+            </Grid>
+
+            <TextBlock Grid.Row="1" Text="{Binding FileName}" HorizontalAlignment="Right" />
+
+            <!--Сообщения-->
+            <Grid x:Name="Messages" Grid.Row="2" >
+                
+                <Grid.Resources>
+                    <CollectionViewSource x:Key="GroupedMessages" Source="{Binding Messages}">
+                        <CollectionViewSource.GroupDescriptions>
+                            <PropertyGroupDescription PropertyName="Date" Converter="{StaticResource messageDateConverter}"/>
+                        </CollectionViewSource.GroupDescriptions>
+                    </CollectionViewSource>
+                </Grid.Resources>
+
+                <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto" helper:ScrollHelper.ScrollToBottom="{Binding EndScrollCommand}">
+                    <ItemsControl ItemsSource="{Binding Source={StaticResource GroupedMessages}}">
+                        <ItemsControl.GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="20 10" Margin="5" HorizontalAlignment="Center" Background="#1F1F1F" CornerRadius="5">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Name}" Value="{x:Null}">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock FontWeight="Bold" FontSize="15" Text="{Binding Path=Name}"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </GroupStyle.HeaderTemplate>
+                            </GroupStyle>
+                        </ItemsControl.GroupStyle>
+                        
+                        <ItemsControl.ItemTemplate>
+
+                            <DataTemplate DataType="{x:Type vm:MessageViewModel}">
+                                <StackPanel Margin="5 5 0 0">
+                                    <ContentControl Content="{Binding }"></ContentControl>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <Image Source="../Resources/loading.png" RenderTransformOrigin="0.5,0.5" Height="50">
+
+                    <Image.RenderTransform>
+                        <RotateTransform x:Name="AnimatedRotateTransform" Angle="0" />
+                    </Image.RenderTransform>
+                    <Image.Triggers>
+                        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Angle" To="3600" Duration="0:0:7" RepeatBehavior="Forever"></DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                    </Image.Triggers>
+
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding OnLoading}" Value="True">
+                                    <Setter Property="Opacity" Value="1"/>
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding OnLoading}" Value="False">
+                                    <Setter Property="Opacity" Value="0"/>
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+            </Grid>
+        </Grid>
+        
+        <!--Users Online-->
+        <Grid Grid.Column="1" Width="150" Margin="0 0 0 0" Background="#1A1A1A">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="Онлайн" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="18" Foreground="#909090"/>
+            <Grid Grid.Row="1" VerticalAlignment="Top">
+                <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                    <ItemsControl ItemsSource="{Binding Users}" VerticalAlignment="Top" helper:ScrollHelper.ScrollToBottom="{Binding EndCommand}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0" VerticalAlignment="Top" HorizontalAlignment="Center">
+
+                                    <TextBlock FontSize="18" TextWrapping="Wrap" Margin="5 10 5 0" VerticalAlignment="Top" HorizontalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Online}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Online}" Value="False">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                        <Grid VerticalAlignment="Top" HorizontalAlignment="Center">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition />
+                                                <RowDefinition />
+                                            </Grid.RowDefinitions>
+                                            <Grid Grid.Row="0" Height="auto">
+                                                    <Image x:Name="image" 
+                                                           Source="{Binding Path=Image, 
+                                                           Converter={StaticResource ResourceKey=imageConverter}}" 
+                                                           VerticalAlignment="Bottom">
+                                                        <Image.InputBindings>
+                                                            <MouseBinding MouseAction="LeftClick" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type views:ChatView}}, Path=DataContext.OpenImage}" CommandParameter="{Binding Path=.}">
+                                                            </MouseBinding>
+                                                        </Image.InputBindings>
+                                                    </Image>
+                                            </Grid>
+                                            <Grid Grid.Row="0" Height="auto">
+                                                    <Image x:Name="video" Source="{Binding Path=Video, Converter={StaticResource ResourceKey=videoConverter}}" VerticalAlignment="Bottom">
+                                                        <Image.InputBindings>
+                                                            <MouseBinding MouseAction="LeftClick" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type views:ChatView}}, Path=DataContext.OpenImage}" CommandParameter="{Binding Path=.}"></MouseBinding>
+                                                        </Image.InputBindings>
+                                                    </Image>
+                                            </Grid>
+                                            <Grid Grid.Row="1">
+                                                <TextBlock FontSize="18" TextWrapping="Wrap" VerticalAlignment="Top" TextAlignment="Center">
+                                                    <Run Text="{Binding Path=Name, Mode=OneWay}" />
+                                                </TextBlock>
+                                            </Grid>
+                                        </Grid>
+                                    </TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+
+
+        <views:OpenImageView Grid.ColumnSpan="2">
+        <views:OpenImageView.Style>
+            <Style TargetType="UserControl">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding OpenImageFlag}" Value="true">
+                        <Setter Property="Visibility" Value="Visible"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding OpenImageFlag}" Value="false">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </views:OpenImageView.Style>
+        </views:OpenImageView>
+
+    </Grid>
+</UserControl>
