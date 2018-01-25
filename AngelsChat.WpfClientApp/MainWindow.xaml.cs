@@ -206,7 +206,11 @@ namespace AngelsChat.WpfClientApp
         private void MenuExitClick(object sender, RoutedEventArgs e)
         {
             CanClose = true;
-            _client.Logout();
+            try
+            {
+                _client.Logout();
+            }
+            catch(Exception ex) { }
             Close();
         }
     }
