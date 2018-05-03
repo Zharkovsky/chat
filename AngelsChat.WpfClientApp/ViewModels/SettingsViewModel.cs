@@ -30,9 +30,9 @@ namespace AngelsChat.WpfClientApp.ViewModels
             }
         }
 
-        ChatViewModel _chatViewModel;
+        ChatRoomsViewModel _chatViewModel;
 
-        public SettingsViewModel(ChatViewModel chatViewModel)
+        public SettingsViewModel(ChatRoomsViewModel chatViewModel)
         {
             settings = Settings.Read();
             _chatViewModel = chatViewModel;

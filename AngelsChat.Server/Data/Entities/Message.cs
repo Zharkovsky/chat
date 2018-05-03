@@ -8,27 +8,35 @@ namespace AngelsChat.Server.Data.Entities
         public int MessageId { get; set; }
         public string Text { get; set; }
         public System.DateTime Date { get; set; }
+
         public User User { get; set; }
-        public string UserName { get; set; }
+        //public string UserName { get; set; }
+
+        public Room Room { get; set; }
+        //public int RoomId { get; set; }
 
         public Message() { }
-        public Message(User user, string message)
+        public Message(Room room, User user, string message)
         {
             Text = message;
             User = user;
-            UserName = user.Name;
+            //UserName = user.Name;
+            Room = room;
+            //RoomId = room.Id;
         }
-        public Message(User user, MessageDto viewModel)
+        public Message(Room room, User user, MessageDto viewModel)
         {
             Text = viewModel.MessageText;
             User = user;
-            UserName = user.Name;
+            //UserName = user.Name;
             Date = viewModel.Date;
+            Room = room;
+            //RoomId = room.Id;
         }
 
         public static MessageDto ToMessageDto(Message message)
         {
-            return new MessageDto (User.ToUserDto(message.User), message.Text, message.Date);
+            return new MessageDto (Room.ToRoomDto(message.Room), User.ToUserDto(message.User), message.Text, message.Date);
         }
     }
 }

@@ -122,16 +122,22 @@
     <Compile Include="Helpers\MessageDateConverter.cs" />
     <Compile Include="Helpers\MessageTypeConverter.cs" />
     <Compile Include="Helpers\ScrollHelper.cs" />
+    <Compile Include="Helpers\ShowMessage.cs" />
     <Compile Include="Helpers\VideoConverter.cs" />
     <Compile Include="Helpers\VoicePlayer.cs" />
     <Compile Include="Helpers\VoiceRecorder.cs" />
     <Compile Include="ViewModels\BinaryBodyViewModel.cs" />
+    <Compile Include="ViewModels\ChatRoomsViewModel.cs" />
     <Compile Include="ViewModels\ErrorViewModel.cs" />
     <Compile Include="ViewModels\MessageViewModel.cs" />
+    <Compile Include="ViewModels\RoomSettingsViewModel.cs" />
     <Compile Include="ViewModels\SendFileViewModel.cs" />
     <Compile Include="ViewModels\TextBodyViewModel.cs" />
     <Compile Include="Views\BinaryBodyView.xaml.cs">
       <DependentUpon>BinaryBodyView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ChatRoomsView.xaml.cs">
+      <DependentUpon>ChatRoomsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ErrorView.xaml.cs">
       <DependentUpon>ErrorView.xaml</DependentUpon>
@@ -143,6 +149,9 @@
       <DependentUpon>OpenImageView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\Settings.cs" />
+    <Compile Include="Views\RoomSettingsView.xaml.cs">
+      <DependentUpon>RoomSettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SendFileView.xaml.cs">
       <DependentUpon>SendFileView.xaml</DependentUpon>
     </Compile>
@@ -159,6 +168,10 @@
       <DependentUpon>TextBodyView.xaml</DependentUpon>
     </Compile>
     <Page Include="Views\BinaryBodyView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ChatRoomsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -185,7 +198,7 @@
     <Compile Include="Views\ChatView.xaml.cs">
       <DependentUpon>ChatView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\ChatViewModel.cs" />
+    <Compile Include="ViewModels\ChatRoomViewModel.cs" />
     <Compile Include="Helpers\IHavePassword.cs" />
     <Compile Include="Views\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
@@ -204,6 +217,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PhotoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResourceDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\RoomSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

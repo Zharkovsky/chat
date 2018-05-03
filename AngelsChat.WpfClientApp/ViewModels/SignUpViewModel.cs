@@ -42,11 +42,11 @@ namespace AngelsChat.WpfClientApp.ViewModels
         }
 
         ClientService _client;
-        ChatViewModel _chatViewModel;
+        ChatRoomsViewModel _chatViewModel;
 
         public ICommand SignUpCommand { get; private set; }
 
-        public SignUpViewModel(ClientService client, ChatViewModel chatViewModel)
+        public SignUpViewModel(ClientService client, ChatRoomsViewModel chatViewModel)
         {
             _client = client;
             _chatViewModel = chatViewModel;

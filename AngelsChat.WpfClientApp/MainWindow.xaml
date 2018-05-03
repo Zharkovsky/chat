@@ -14,7 +14,10 @@
         <DataTemplate DataType="{x:Type vm:LoginViewModel}">
             <views:LoginView/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:ChatViewModel}">
+        <DataTemplate DataType="{x:Type vm:ChatRoomsViewModel}">
+            <views:ChatRoomsView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ChatRoomViewModel}">
             <views:ChatView />
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:PhotoViewModel}">

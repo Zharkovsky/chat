@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Diagnostics;
 using System.IO;
-using System.Xml.Serialization;
-using System.Runtime.InteropServices;
+using AngelsChat.Shared.Data;
 
 namespace AngelsChat.WpfClientApp.Helpers
 {
     public class VoiceRecorder
     {
-        public delegate void Sender(byte[] voice);
+        private RoomDto _room;
+        public delegate void Sender(RoomDto room, byte[] voice);
         public Sender _send;
 
         private WinSound.Recorder m_Recorder = new WinSound.Recorder();
@@ -46,8 +40,9 @@ namespace AngelsChat.WpfClientApp.Helpers
         WinSound.WaveFileHeader m_FileHeader = new WinSound.WaveFileHeader();
 
 
-        public void Init(Sender send)
+        public void Init(RoomDto room, Sender send)
         {
+            _room = room;
             _send = send;
             try
             {
@@ -105,7 +100,7 @@ namespace AngelsChat.WpfClientApp.Helpers
                             //Alles in RTP Packet umwandeln
                             Byte[] rtp = ToRTPData(data, Config.BitsPerSample, Config.Channels);
                             //Absenden
-                            _send(rtp);
+                            _send(_room, rtp);
                         }
                     }
                 }
@@ -228,7 +223,7 @@ namespace AngelsChat.WpfClientApp.Helpers
                         Array.Copy(m_FilePayloadBuffer, m_CurrentRTPBufferPos, m_PartByte, 0, m_RTPPartsLength);
                         m_CurrentRTPBufferPos += m_RTPPartsLength;
                         WinSound.RTPPacket rtp = ToRTPPacket(m_PartByte, m_FileHeader.BitsPerSample, m_FileHeader.Channels);
-                        _send(rtp.ToBytes());
+                        _send(_room, rtp.ToBytes());
                     }
                     else
                     {
@@ -237,7 +232,7 @@ namespace AngelsChat.WpfClientApp.Helpers
                         Byte[] restBytes = new Byte[m_PartByte.Length];
                         Array.Copy(m_FilePayloadBuffer, m_CurrentRTPBufferPos, restBytes, 0, rest);
                         WinSound.RTPPacket rtp = ToRTPPacket(restBytes, m_FileHeader.BitsPerSample, m_FileHeader.Channels);
-                        _send(rtp.ToBytes());
+                        _send(_room, rtp.ToBytes());
 
                         if (m_Loop == false)
                         {
@@ -308,7 +303,7 @@ namespace AngelsChat.WpfClientApp.Helpers
                         //RTP Packet in Bytes umwandeln
                         Byte[] rtpBytes = rtp.ToBytes();
                         //Absenden
-                        _send(rtpBytes);
+                        _send(_room, rtpBytes);
                     }
                 }
             }

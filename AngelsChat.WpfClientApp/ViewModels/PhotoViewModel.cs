@@ -29,9 +29,9 @@ namespace AngelsChat.WpfClientApp.ViewModels
         }
 
         private ClientService _client;
-        ChatViewModel _chatViewModel;
+        ChatRoomViewModel _chatViewModel;
 
-        public PhotoViewModel(ClientService client, ChatViewModel chatViewModel)
+        public PhotoViewModel(ClientService client, ChatRoomViewModel chatViewModel)
         {
             _client = client;
             _chatViewModel = chatViewModel;
@@ -56,7 +56,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
         public void Start()
         {
             Log.Trace("Запуск PhotoViewModel");
-            _chatViewModel.Body = _chatViewModel.MakePhotoViewModel;
+            _chatViewModel.Body = this;
             if (!_isGrabbing)
             {
                 Task.Factory.StartNew(() =>

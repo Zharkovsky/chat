@@ -13,10 +13,11 @@ using System.Threading;
 
 namespace AngelsChat.Client
 {
-    public delegate void MessageEvent(MessageDto message);
-    public delegate void UserEvent(UserDto message);
+    public delegate void RoomEvent(RoomDto room);
+    public delegate void MessageEvent(RoomDto room, MessageDto message);
+    public delegate void UserEvent(RoomDto room, UserDto message);
     public delegate void ImageEvent(ImageDto image, UserDto user);
-    public delegate void MediaEvent(List<byte[]> media, UserDto user);
+    public delegate void MediaEvent(RoomDto room, List<byte[]> media, UserDto user);
     public delegate void ErrorEvent(string error, bool reconnect, bool logout);
     public delegate void FileRequestEvent(FilePartDto file);
     public delegate byte[] FileEvent(long recieved, long recieveBufferSize);
@@ -85,28 +86,60 @@ namespace AngelsChat.Client
             set { _user = value; }
         }
 
+        public event RoomEvent RoomRemovedEvent;
+        protected void OnRoomRemove(RoomDto room) => RoomRemovedEvent?.Invoke(room);
+        public void RoomRemoved(RoomDto room)
+        {
+            Log.Trace("Удаление комнаты {0}", room.Name);
+            OnRoomRemove(room);
+        }
+
+        public event RoomEvent RoomUpdatedEvent;
+        protected void OnRoomUpdate(RoomDto room) => RoomUpdatedEvent?.Invoke(room);
+        public void RoomUpdated(RoomDto room)
+        {
+            Log.Trace("Обновление комнаты {0}", room.Name);
+            OnRoomUpdate(room);
+        }
+
+        public event UserEvent UserInvited;
+        protected void OnUserInvite(RoomDto room, UserDto user) => UserInvited?.Invoke(room, user);
+        public void AddUser(RoomDto room, UserDto user)
+        {
+            Log.Trace("Добавление в комнату пользователя {0}", user.Name);
+            OnUserInvite(room, user);
+        }
+
+        public event UserEvent UserRemoved;
+        protected void OnUserRemove(RoomDto room, UserDto user) => UserRemoved?.Invoke(room, user);
+        public void RemoveUser(RoomDto room, UserDto user)
+        {
+            Log.Trace("Удаление из комнаты пользователя {0}", user.Name);
+            OnUserRemove(room, user);
+        }
+
         public event UserEvent UserEntered;
-        protected void OnUserEnter(UserDto user) => UserEntered?.Invoke(user);
-        public void AddOnlineUser(UserDto user)
+        protected void OnUserEnter(RoomDto room, UserDto user) => UserEntered?.Invoke(room, user);
+        public void AddOnlineUser(RoomDto room, UserDto user)
         {
             Log.Trace("Добавление онлайн пользователя {0}", user.Name);
-            OnUserEnter(user);
+            OnUserEnter(room, user);
         }
 
         public event UserEvent UserOut;
-        protected void OnUserOut(UserDto user) => UserOut?.Invoke(user);
-        public void RemoveOnlineUser(UserDto user)
+        protected void OnUserOut(RoomDto room, UserDto user) => UserOut?.Invoke(room, user);
+        public void RemoveOnlineUser(RoomDto room, UserDto user)
         {
             Log.Trace("Удаление из онлайн пользователя {0}", user.Name);
-            OnUserOut(user);
+            OnUserOut(room, user);
         }
 
         public event MessageEvent MessageRecived;
-        protected void OnMessageRecived(MessageDto message) => MessageRecived?.Invoke(message);
-        public void PrintMessage(MessageDto message)
+        protected void OnMessageRecived(RoomDto room, MessageDto message) => MessageRecived?.Invoke(room, message);
+        public void PrintMessage(RoomDto room, MessageDto message)
         {
             Log.Trace("Сообщение: {0}", message.MessageText);
-            OnMessageRecived(message);
+            OnMessageRecived(room, message);
         }
 
         public event ImageEvent UserImage;
@@ -118,8 +151,8 @@ namespace AngelsChat.Client
         }
 
         public event MediaEvent UserVideo;
-        protected void SendUserVideo(List<byte[]> video, UserDto user) => UserVideo?.Invoke(video, user);
-        public void ShowVideo(List<byte[]> video, UserDto user) => SendUserVideo(video, user);
+        protected void SendUserVideo(RoomDto room, List<byte[]> video, UserDto user) => UserVideo?.Invoke(room, video, user);
+        public void ShowVideo(RoomDto room, List<byte[]> video, UserDto user) => SendUserVideo(room, video, user);
 
         public event ErrorEvent Error;
         protected void OnError(string error, bool reconnect, bool logout) => Error?.Invoke(error, reconnect, logout);
@@ -260,7 +293,7 @@ namespace AngelsChat.Client
 
         private List<byte[]> SendingVideo = new List<byte[]>();
         DateTime last_video_sending = DateTime.MinValue;
-        public void SendVideo(byte[] video)
+        public void SendVideo(RoomDto room, byte[] video)
         {
             if (last_video_sending == DateTime.MinValue) last_video_sending = DateTime.Now;
 
@@ -269,12 +302,12 @@ namespace AngelsChat.Client
             {
                 try
                 {
-                    server.SendVideo(SendingVideo);
+                    server.SendVideo(room, SendingVideo);
                 }
                 catch (CommunicationObjectFaultedException e)
                 {
                     Log.Error(e);
-                    SendUserVideo(null, User);
+                    SendUserVideo(room, null, User);
                     ShowError("Ошибка отправки видео. Проблемы при подключению к серверу.", true);
                 }
                 catch (TimeoutException e)
@@ -294,7 +327,7 @@ namespace AngelsChat.Client
 
         private List<byte[]> SendingAudio = new List<byte[]>();
         DateTime last_audio_sending = DateTime.MinValue;
-        public void SendVoice(byte[] voice)
+        public void SendVoice(RoomDto room, byte[] voice)
         {
             if (last_audio_sending == DateTime.MinValue) last_audio_sending = DateTime.Now;
 
@@ -303,12 +336,12 @@ namespace AngelsChat.Client
             {
                 try
                 {
-                    server.SendVoice(SendingAudio);
+                    server.SendVoice(room, SendingAudio);
                 }
                 catch (CommunicationObjectFaultedException e)
                 {
                     Log.Error(e);
-                    SendUserVideo(null, User);
+                    SendUserVideo(room, null, User);
                     ShowError("Ошибка отправки аудио. Проблемы при подключению к серверу.", true);
                 }
                 catch (TimeoutException e)
@@ -326,12 +359,12 @@ namespace AngelsChat.Client
             }
         }
 
-        public List<UserDto> GetOnlineUsers()
+        public List<UserDto> GetOnlineUsers(RoomDto room)
         {
             try
             {
                 Log.Trace("Загрузка online пользователей");
-                return server.GetOnlineUsers();
+                return server.GetOnlineUsers(room);
             }
             catch (CommunicationObjectFaultedException e)
             {
@@ -374,12 +407,12 @@ namespace AngelsChat.Client
             }
             return null;
         }
-        public List<UserDto> GetUsers()
+        public List<UserDto> GetAllUsers()
         {
             try
             {
                 Log.Trace("Загрузка пользователей", true);
-                return server.GetUsers();
+                return server.GetAllUsers();
             }
             catch (CommunicationObjectFaultedException e)
             {
@@ -398,12 +431,36 @@ namespace AngelsChat.Client
             }
             return null;
         }
-        public bool IsOnline(string name)
+        public List<UserDto> GetUsers(RoomDto room)
+        {
+            try
+            {
+                Log.Trace("Загрузка пользователей", true);
+                return server.GetUsers(room);
+            }
+            catch (CommunicationObjectFaultedException e)
+            {
+                Log.Error(e);
+                ShowError("Проблемы при подключению к серверу.", true);
+            }
+            catch (TimeoutException e)
+            {
+                Log.Error(e);
+                ShowError("Не удалось загрузить пользователей", true);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+                ShowError("Проблемы при подключении к серверу", true, true);
+            }
+            return null;
+        }
+        public bool IsOnline(RoomDto room, string name)
         {
             try
             {
                 Log.Trace("Проверка пользователя онлайн");
-                return server.IsOnline(name);
+                return server.IsOnline(room, name);
             }
             catch (CommunicationObjectFaultedException e)
             {
@@ -422,12 +479,12 @@ namespace AngelsChat.Client
             }
             return false;
         }
-        public List<MessageDto> LoadMessages(DateTime? date, int number = 5)
+        public List<MessageDto> LoadMessages(RoomDto room, DateTime? date, int number = 5)
         {
             try
             {
                 Log.Trace("Загрузка сообщений");
-                return server.LoadMessages(number, date);
+                return server.LoadMessages(room, number, date);
             }
             catch (CommunicationObjectFaultedException e)
             {
@@ -454,12 +511,80 @@ namespace AngelsChat.Client
 
         public long GetFile(FileMessageDto message) => server.GetFile(message);
         public byte[] DownloadFile(long recieved) => server.DownloadFile(recieved);
+        public void DeleteFile() => server.DeleteFile();
 
-        
+
+
 
         public event MediaEvent UserSound;
-        protected void PlayUserSound(List<byte[]> arr, UserDto user) => UserSound?.Invoke(arr, user);
-        public void PlaySound(List<byte[]> arr, UserDto user) => PlayUserSound(arr, user);
-        
+        protected void PlayUserSound(RoomDto room, List<byte[]> arr, UserDto user) => UserSound?.Invoke(room, arr, user);
+        public void PlaySound(RoomDto room, List<byte[]> arr, UserDto user) => PlayUserSound(room, arr, user);
+
+        public List<RoomDto> GetRooms()
+        {
+            try
+            {
+                return server.GetRooms();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+                ShowError("Проблемы при подключении к серверу", true, true);
+            }
+            return null;
+        }
+
+        public RoomDto CreateRoom(RoomDto room)
+        {
+            try
+            {
+                return server.CreateRoom(room);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+                ShowError("Проблемы при подключении к серверу", true, true);
+                return null;
+            }
+        }
+
+        public void RemoveRoom(RoomDto room)
+        {
+            try
+            {
+                server.RemoveRoom(room);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+                ShowError("Проблемы при подключении к серверу", true, true);
+            }
+        }
+
+        public void UpdateRoom(RoomDto room)
+        {
+            try
+            {
+                server.UpdateRoom(room);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+                ShowError("Проблемы при подключении к серверу", true, true);
+            }
+        }
+
+        public void InviteUser(RoomDto room, UserDto user)
+        {
+            try
+            {
+                server.InviteUser(room, user);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+                ShowError("Проблемы при подключении к серверу", true, true);
+            }
+        }
     }
 }

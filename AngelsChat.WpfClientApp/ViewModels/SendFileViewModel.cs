@@ -17,8 +17,8 @@ namespace AngelsChat.WpfClientApp.ViewModels
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private ClientService _client;
-        ChatViewModel _chatViewModel;
-        public SendFileViewModel(ClientService client, ChatViewModel chatViewModel)
+        ChatRoomViewModel _chatViewModel;
+        public SendFileViewModel(ClientService client, ChatRoomViewModel chatViewModel)
         {
             _client = client;
             _chatViewModel = chatViewModel;
@@ -82,7 +82,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
         private void BackAction(object obj)
         {
             FilePath = "";
-            _chatViewModel.Body = _chatViewModel.MainChatViewModel;
+            _chatViewModel.SendFileViewModelFlag = false;
             ProgressVisibility = "Collapsed";
             Log.Trace("Команда вернуться");
         }
@@ -122,7 +122,8 @@ namespace AngelsChat.WpfClientApp.ViewModels
             }
 
             ProgressVisibility = "Collapsed";
-            _chatViewModel.Body = _chatViewModel.MainChatViewModel;
+            _chatViewModel.OnPropertyChanged(nameof(_chatViewModel.FileName));
+            _chatViewModel.SendFileViewModelFlag = false;
         }
 
         private RelayCommand choose;

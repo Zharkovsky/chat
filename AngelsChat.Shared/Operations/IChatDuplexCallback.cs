@@ -8,18 +8,30 @@ namespace AngelsChat.Shared.Operations
     {
         [OperationContract]
         [ServiceKnownType(typeof(FileMessageDto))]
-        void PrintMessage(MessageDto message);
+        void PrintMessage(RoomDto room, MessageDto message);
         [OperationContract]
-        void AddOnlineUser(UserDto user);
+        void AddUser(RoomDto room, UserDto user);
         [OperationContract]
-        void RemoveOnlineUser(UserDto uesr);
+        void RemoveUser(RoomDto room, UserDto user);
+        [OperationContract]
+        void AddOnlineUser(RoomDto room, UserDto user);
+        [OperationContract]
+        void RemoveOnlineUser(RoomDto room, UserDto user);
         [OperationContract]
         void ChangeUserImage(UserDto user, ImageDto image);
         [OperationContract]
-        void ShowVideo(List<byte[]> video, UserDto user);
+        void ShowVideo(RoomDto room, List<byte[]> video, UserDto user);
         [OperationContract]
         long GetFile(FileMessageDto message);
         [OperationContract]
-        void PlaySound(System.Collections.Generic.List<byte[]> voice, UserDto user);
+        void PlaySound(RoomDto room, List<byte[]> voice, UserDto user);
+        [OperationContract]
+        RoomDto CreateRoom(RoomDto room);
+        [OperationContract]
+        void RemoveRoom(RoomDto room);
+        [OperationContract]
+        void RoomRemoved(RoomDto room);
+        [OperationContract]
+        void RoomUpdated(RoomDto room);
     }
 }

@@ -23,7 +23,8 @@ namespace AngelsChat.Server.Data.Entities
                 FileWeight = message.FileWeight,
                 Hash = GetMD5Hash(message.Content.Content),
                 MessageText = message.Text,
-                Owner = User.ToUserDto(message.User)
+                Owner = User.ToUserDto(message.User),
+                Room = Room.ToRoomDto(message.Room)
             };
         }
 

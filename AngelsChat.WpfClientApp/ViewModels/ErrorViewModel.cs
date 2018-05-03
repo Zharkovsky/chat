@@ -43,9 +43,9 @@ namespace AngelsChat.WpfClientApp.ViewModels
         private ClientService _client;
         LoginViewModel _loginViewModel;
         SignUpViewModel _signUpViewModel;
-        ChatViewModel _chatViewModel;
+        ChatRoomsViewModel _chatViewModel;
 
-        public ErrorViewModel(ClientService client, LoginViewModel loginViewModel, SignUpViewModel signUpViewModel, ChatViewModel chatViewModel)
+        public ErrorViewModel(ClientService client, LoginViewModel loginViewModel, SignUpViewModel signUpViewModel, ChatRoomsViewModel chatViewModel)
         {
             _client = client;
             _loginViewModel = loginViewModel;
@@ -73,10 +73,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
             _client.Open(endpointAdress);
             App.Current.Dispatcher.Invoke(() =>
             {
-                _chatViewModel.Messages.Clear();
-                _chatViewModel.Users.Clear();
-                _chatViewModel.StopImageStreams();
-                _chatViewModel.lastMessageDate = null;
+                _chatViewModel.Rooms.Clear();
             });
             if (!_client.CheckConnection())
             {
