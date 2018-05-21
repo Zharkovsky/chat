@@ -1,10 +1,4 @@
-﻿using AngelsChat.Shared;
-using AngelsChat.Shared.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AngelsChat.Shared.Data;
 
 namespace AngelsChat.Server.Data.Entities
 {

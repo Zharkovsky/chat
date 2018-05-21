@@ -7,6 +7,8 @@ using AngelsChat.Shared.Data;
 using AngelsChat.Shared.Operations;
 using AngelsChat.Server.Data.Entities;
 using AngelsChat.Server.Core;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace AngelsChat.Server.ContractImplementations
 {
@@ -21,9 +23,10 @@ namespace AngelsChat.Server.ContractImplementations
             if (user == null)
                 user = SignUp(loginDto);
             User = new User(user);
+            MainServer.Current.ServerContract = this;
            
         }
-        
+
         public User User { get; set; }
         private bool authorized = false;
 
@@ -78,7 +81,7 @@ namespace AngelsChat.Server.ContractImplementations
         /// <returns></returns>
         public UserDto SignUp(LoginDto login)
         {
-            var request = MainServer.Current.SignUp(this, login);
+            var request = MainServer.Current.Registration(this, login);
             if (request != null)
             {
                 GetStarted();
@@ -97,7 +100,7 @@ namespace AngelsChat.Server.ContractImplementations
             return true;
         }
 
-        public void AddOnlineUser(UserDto user)
+        public void AddOnlineUser(RoomDto room, UserDto user)
         {
             if (authorized)
                 Task.Factory.StartNew(() =>
@@ -105,7 +108,7 @@ namespace AngelsChat.Server.ContractImplementations
                     try
                     {
                         Log.Trace("Добавление {0}", user.Name);
-                        SendMessage(new MessageDto { Date = DateTime.Now, MessageText = $"Пользователь {user.Name} вошел в чат", Owner = User.ToUserDto(User) });
+                        SendMessage(new MessageDto { Date = DateTime.Now, MessageText = $"Пользователь {user.Name} вошел в чат", Owner = User.ToUserDto(User), Room = room });
                     }
                     catch (System.Exception e)
                     {
@@ -113,7 +116,7 @@ namespace AngelsChat.Server.ContractImplementations
                     }
                 });
         }
-        public void RemoveOnlineUser(UserDto user)
+        public void RemoveOnlineUser(RoomDto room, UserDto user)
         {
             if (authorized)
                 Task.Factory.StartNew(() =>
@@ -121,7 +124,7 @@ namespace AngelsChat.Server.ContractImplementations
                     try
                     {
                         Log.Trace("Удаление {0}", user.Name);
-                        SendMessage(new MessageDto { Date = DateTime.Now, MessageText = $"Пользователь {user.Name} вышел из чата", Owner = User.ToUserDto(User) });
+                        SendMessage(new MessageDto { Date = DateTime.Now, MessageText = $"Пользователь {user.Name} вышел из чата", Owner = User.ToUserDto(User), Room = room });
                     }
                     catch (Exception e)
                     {
@@ -130,7 +133,7 @@ namespace AngelsChat.Server.ContractImplementations
                 });
         }
 
-        public void SendReply(MessageDto message)
+        public void SendReply(RoomDto room, MessageDto message)
         {
             throw new NotImplementedException();
         }
@@ -140,27 +143,27 @@ namespace AngelsChat.Server.ContractImplementations
             throw new NotImplementedException();
         }
 
-        public void ChangeUserImage(UserDto user, ImageDto image)
+        public void ChangeUserImage(RoomDto room, UserDto user, ImageDto image)
         {
             throw new NotImplementedException();
         }
 
-        public List<UserDto> GetOnlineUsers()
+        public List<UserDto> GetOnlineUsers(RoomDto room)
         {
             throw new NotImplementedException();
         }
 
-        public void SendVideo(List<byte[]> video)
+        public void SendVideo(RoomDto room, List<byte[]> video)
         {
             throw new NotImplementedException();
         }
 
-        public void SendVideoForUser(List<byte[]> video, UserDto user)
+        public void SendVideoForUser(RoomDto room, List<byte[]> video, UserDto user)
         {
             throw new NotImplementedException();
         }
 
-        public List<MessageDto> LoadMessages(int number, DateTime? date)
+        public List<MessageDto> LoadMessages(RoomDto room, int number, DateTime? date)
         {
             throw new NotImplementedException();
         }
@@ -170,12 +173,12 @@ namespace AngelsChat.Server.ContractImplementations
             throw new NotImplementedException();
         }
 
-        public List<UserDto> GetUsers()
+        public List<UserDto> GetUsers(RoomDto room)
         {
             throw new NotImplementedException();
         }
 
-        public bool IsOnline(string name)
+        public bool IsOnline(RoomDto room, string name)
         {
             throw new NotImplementedException();
         }
@@ -191,6 +194,11 @@ namespace AngelsChat.Server.ContractImplementations
         }
 
         public long GetFile(FileMessageDto file)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendVoiceForUser(RoomDto room, List<byte[]> voice, UserDto user)
         {
             throw new NotImplementedException();
         }
@@ -220,12 +228,92 @@ namespace AngelsChat.Server.ContractImplementations
             throw new NotImplementedException();
         }
 
-        public void SendVoice(List<byte[]> voice)
+        public void SendVoice(RoomDto room, List<byte[]> voice)
         {
             throw new NotImplementedException();
         }
 
-        public void SendVoiceForUser(List<byte[]> voice, UserDto user)
+        public List<RoomDto> GetRooms()
+        {
+            throw new NotImplementedException();
+        }
+
+        public RoomDto CreateRoom(RoomDto room)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveRoom(RoomDto room)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<UserDto> GetAllUsers()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateRoom(RoomDto room)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void InviteUser(RoomDto room, UserDto user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddUser(RoomDto room, UserDto user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveUser(RoomDto room, UserDto user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RoomRemoved(RoomDto room)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RoomUpdated(RoomDto room)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteFile()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void KickUser(RoomDto room, UserDto user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public UserDto UpdateProfile(LoginDto login)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateProfileOnClientSide(UserDto uer, string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddRoomForVideo(RoomDto room)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveRoomFromVideo(RoomDto room)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendVoice(List<byte[]> voice)
         {
             throw new NotImplementedException();
         }

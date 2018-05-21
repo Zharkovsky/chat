@@ -38,7 +38,7 @@ namespace AngelsChat.Server.ContractImplementations
         /// <summary>
         /// Message for user
         /// </summary>
-        public void SendReply(MessageDto message)
+        public void SendReply(RoomDto room, MessageDto message)
         {
             if(authorized)
                 Task.Factory.StartNew(() =>
@@ -46,7 +46,7 @@ namespace AngelsChat.Server.ContractImplementations
                     try
                     {
                         Log.Trace("Отправка сообщения пользователю");
-                        callback.PrintMessage(message);
+                        callback.PrintMessage(room, message);
                     }
                     catch (Exception e)
                     {
@@ -80,7 +80,7 @@ namespace AngelsChat.Server.ContractImplementations
             if (authorized)
             {
                 Log.Trace("Отправка изображения на сервер");
-                MainServer.Current.SetImage(this, image);
+                Task.Factory.StartNew(() => MainServer.Current.SetAvatar(this, image));
                 return User.ToUserDto(User);
             }
             else
@@ -90,7 +90,7 @@ namespace AngelsChat.Server.ContractImplementations
             }
         }
 
-        public void ChangeUserImage(UserDto user, ImageDto image)
+        public void ChangeUserImage(RoomDto room, UserDto user, ImageDto image)
         {
             if (authorized)
                 Task.Factory.StartNew(() =>
@@ -107,6 +107,11 @@ namespace AngelsChat.Server.ContractImplementations
                 });
         }
 
+        public UserDto UpdateProfile(LoginDto login)
+        {
+            var request = MainServer.Current.UpdateProfile(this, login);
+            return request;
+        }
         /// <summary>
         /// Authorization
         /// </summary>
@@ -132,7 +137,7 @@ namespace AngelsChat.Server.ContractImplementations
         /// <returns></returns>
         public UserDto SignUp(LoginDto login)
         {
-            var request = MainServer.Current.SignUp(this, login);
+            var request = MainServer.Current.Registration(this, login);
             if (request != null)
             {
                 GetStarted();
@@ -155,10 +160,10 @@ namespace AngelsChat.Server.ContractImplementations
         /// Get online users
         /// </summary>
         /// <returns></returns>
-        public List<UserDto> GetOnlineUsers()
+        public List<UserDto> GetOnlineUsers(RoomDto room)
         {
             Log.Trace("Получение пользователей");
-            var task = Task.Factory.StartNew(() => MainServer.Current.GetOnlineUsers(this));
+            var task = Task.Factory.StartNew(() => MainServer.Current.GetOnlineUsers(room));
             task.Wait();
             return task.Result;
         }
@@ -167,12 +172,12 @@ namespace AngelsChat.Server.ContractImplementations
         /// Video stream
         /// </summary>
         /// <param name="video"></param>
-        public void SendVideo(List<byte[]> video)
+        public void SendVideo(RoomDto room, List<byte[]> video)
         {
             if(authorized)
                 try
                 {
-                    MainServer.Current.SendVideo(this, video);
+                    MainServer.Current.SendVideo(room, this, video);
                 }
                 catch (Exception e)
                 {
@@ -181,19 +186,46 @@ namespace AngelsChat.Server.ContractImplementations
                 
         }
 
+        public void AddRoomForVideo(RoomDto room)
+        {
+            if (authorized)
+                try
+                {
+                    MainServer.Current.AddRoomForVideo(room, this);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                }
+
+        }
+
+        public void RemoveRoomFromVideo(RoomDto room)
+        {
+            if (authorized)
+                try
+                {
+                    MainServer.Current.RemoveRoomFromVideo(room, this);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                }
+
+        }
         /// <summary>
         /// Video for user
         /// </summary>
         /// <param name="video"></param>
         /// <param name="user"></param>
-        public void SendVideoForUser(List<byte[]> video, UserDto user)
+        public void SendVideoForUser(RoomDto room, List<byte[]> video, UserDto user)
         {
             if (authorized)
                 Task.Factory.StartNew(() =>
                 {
                     try
                     {
-                        callback.ShowVideo(video, user);
+                        callback.ShowVideo(room, video, user);
                     }
                     catch (System.Exception e)
                     {
@@ -201,16 +233,16 @@ namespace AngelsChat.Server.ContractImplementations
                     }
                 });
         }
-        
-        public void AddOnlineUser(UserDto user)
+
+        public void AddUser(RoomDto room, UserDto user)
         {
-            if(authorized)
+            if (authorized)
                 Task.Factory.StartNew(() =>
                 {
                     try
                     {
                         Log.Trace("Добавление {0}", user.Name);
-                        Task.Factory.StartNew(() => { callback.AddOnlineUser(user); });
+                        Task.Factory.StartNew(() => { callback.AddUser(room, user); });
                     }
                     catch (System.Exception e)
                     {
@@ -218,7 +250,8 @@ namespace AngelsChat.Server.ContractImplementations
                     }
                 });
         }
-        public void RemoveOnlineUser(UserDto user)
+
+        public void RemoveUser(RoomDto room, UserDto user)
         {
             if (authorized)
                 Task.Factory.StartNew(() =>
@@ -226,7 +259,7 @@ namespace AngelsChat.Server.ContractImplementations
                     try
                     {
                         Log.Trace("Удаление {0}", user.Name);
-                        Task.Factory.StartNew(() => callback.RemoveOnlineUser(user));
+                        Task.Factory.StartNew(() => callback.RemoveUser(room, user));
                     }
                     catch (Exception e)
                     {
@@ -235,10 +268,93 @@ namespace AngelsChat.Server.ContractImplementations
                 });
         }
 
-        public List<MessageDto> LoadMessages(int number, System.DateTime? date)
+        public void AddOnlineUser(RoomDto room, UserDto user)
+        {
+            if(authorized)
+                Task.Factory.StartNew(() =>
+                {
+                    try
+                    {
+                        Log.Trace("Добавление {0}", user.Name);
+                        Task.Factory.StartNew(() => { callback.AddOnlineUser(room, user); });
+                    }
+                    catch (System.Exception e)
+                    {
+                        Log.Error(e);
+                    }
+                });
+        }
+        public void RemoveOnlineUser(RoomDto room, UserDto user)
+        {
+            if (authorized)
+                Task.Factory.StartNew(() =>
+                {
+                    try
+                    {
+                        Log.Trace("Удаление {0}", user.Name);
+                        Task.Factory.StartNew(() => callback.RemoveOnlineUser(room, user));
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                    }
+                });
+        }
+
+        public void RoomRemoved(RoomDto room)
+        {
+            if (authorized)
+                Task.Factory.StartNew(() =>
+                {
+                    try
+                    {
+                        Log.Trace("Удаление {0}", room.Name);
+                        Task.Factory.StartNew(() => callback.RoomRemoved(room));
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                    }
+                });
+        }
+
+        public void RoomUpdated(RoomDto room)
+        {
+            if (authorized)
+                Task.Factory.StartNew(() =>
+                {
+                    try
+                    {
+                        Log.Trace("Удаление {0}", room.Name);
+                        Task.Factory.StartNew(() => callback.RoomUpdated(room));
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                    }
+                });
+        }
+
+        public void UpdateProfileOnClientSide(UserDto user, string name)
+        {
+            if (authorized)
+                Task.Factory.StartNew(() =>
+                {
+                    try
+                    {
+                        callback.UpdateProfileOnClientSide(user, name);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                    }
+                });
+        }
+
+        public List<MessageDto> LoadMessages(RoomDto room, int number, System.DateTime? date)
         {
             Log.Trace("Загрузка сообщений");
-            var task = Task.Factory.StartNew(()=>MainServer.Current.LoadMessages(this, number, date));
+            var task = Task.Factory.StartNew(()=>MainServer.Current.LoadMessages(room, this, number, date));
             task.Wait();
             return task.Result;
         }
@@ -249,15 +365,22 @@ namespace AngelsChat.Server.ContractImplementations
             return MainServer.Current.GetAvatar(name);
         }
 
-        public List<UserDto> GetUsers()
+        public List<UserDto> GetUsers(RoomDto room)
         {
             Log.Trace("Получение пользователей");
-            return MainServer.Current.GetUsers();
+            return MainServer.Current.GetUsers(room);
         }
-        public bool IsOnline(string name)
+
+        public List<UserDto> GetAllUsers()
+        {
+            Log.Trace("Получение пользователей");
+            return MainServer.Current.GetAllUsers();
+        }
+
+        public bool IsOnline(RoomDto room, string name)
         {
             Log.Trace("{0} онлайн?", name);
-            return MainServer.Current.IsOnline(name);
+            return MainServer.Current.IsOnline(room, name);
         }
 
         public int GetMaxFileLength()
@@ -289,11 +412,14 @@ namespace AngelsChat.Server.ContractImplementations
             Array.Copy(serverFile, recieved, partOfFile, 0, length);
             return partOfFile;
         }
+        public void DeleteFile()
+        {
+            serverFile = null;
+        }
 
         public void Logout()
         {
             MainServer.Current.Logout(this);
-            MainServer.Current.UserLeave(this);
         }
 
         public void SendVoice(List<byte[]> voice)
@@ -309,20 +435,99 @@ namespace AngelsChat.Server.ContractImplementations
                 }
         }
 
-        public void SendVoiceForUser(List<byte[]> voice, UserDto user)
+        public void SendVoiceForUser(RoomDto room, List<byte[]> voice, UserDto user)
         {
             if (authorized && user.Name != User.Name)
                 Task.Factory.StartNew(() =>
                 {
                     try
                     {
-                        callback.PlaySound(voice, user);
+                        callback.PlaySound(room, voice, user);
                     }
-                    catch (System.Exception e)
+                    catch (Exception e)
                     {
                         Log.Error(e);
                     }
                 });
+        }
+
+        public List<RoomDto> GetRooms()
+        {
+            if (authorized)
+                try
+                {
+                    return MainServer.Current.GetRooms(this);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                }
+            return null;
+        }
+
+        public RoomDto CreateRoom(RoomDto room)
+        {
+            if (authorized)
+                try
+                {
+                    return MainServer.Current.CreateRoom(room, this);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                }
+            return null;
+        }
+
+        public void RemoveRoom(RoomDto room)
+        {
+            if (authorized)
+                try
+                {
+                    MainServer.Current.RemoveRoom(room, this);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                }
+        }
+
+        public void UpdateRoom(RoomDto room)
+        {
+            if (authorized)
+                try
+                {
+                    MainServer.Current.UpdateRoom(room, this);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                }
+        }
+
+        public void InviteUser(RoomDto room, UserDto user)
+        {
+            if (authorized)
+                try
+                {
+                    MainServer.Current.InviteUser(room, user, this);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                }
+        }
+        public void KickUser(RoomDto room, UserDto user)
+        {
+            if (authorized)
+                try
+                {
+                    MainServer.Current.KickUser(room, user, this);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                }
         }
     }
 }

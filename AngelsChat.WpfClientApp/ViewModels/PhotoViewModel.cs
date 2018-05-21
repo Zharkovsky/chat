@@ -29,12 +29,10 @@ namespace AngelsChat.WpfClientApp.ViewModels
         }
 
         private ClientService _client;
-        ChatViewModel _chatViewModel;
 
-        public PhotoViewModel(ClientService client, ChatViewModel chatViewModel)
+        public PhotoViewModel(ClientService client)
         {
             _client = client;
-            _chatViewModel = chatViewModel;
             SendFlag = false;
             Back = new RelayCommand(BackAction);
             MakePhoto = new RelayCommand(MakePhotoAction);
@@ -55,8 +53,9 @@ namespace AngelsChat.WpfClientApp.ViewModels
         private bool _isGrabbing;
         public void Start()
         {
+
+            OpenImageFlag = !OpenImageFlag;
             Log.Trace("Запуск PhotoViewModel");
-            _chatViewModel.Body = _chatViewModel.MakePhotoViewModel;
             if (!_isGrabbing)
             {
                 Task.Factory.StartNew(() =>
@@ -102,8 +101,9 @@ namespace AngelsChat.WpfClientApp.ViewModels
         public void BackAction(object obj)
         {
             _isGrabbing = false;
-            _chatViewModel.Body = _chatViewModel.MainChatViewModel;
             SendFlag = false;
+            OpenImageFlag = false;
+            Image = _client.GetAvatar(_client.User.Name);
             Log.Trace("Команда вернуться");
         }
 
@@ -114,6 +114,17 @@ namespace AngelsChat.WpfClientApp.ViewModels
             private set
             {
                 makePhoto = value;
+                OnPropertyChanged();
+            }
+        }
+        // Флаг увеличения фото
+        private bool _openImageFlag;
+        public bool OpenImageFlag
+        {
+            get => _openImageFlag;
+            set
+            {
+                _openImageFlag = value;
                 OnPropertyChanged();
             }
         }
@@ -138,7 +149,6 @@ namespace AngelsChat.WpfClientApp.ViewModels
         {
             Log.Trace("Команда отправить фото");
             _client.SetImage(Image);
-            _chatViewModel.Body = _chatViewModel.MainChatViewModel;
             SendFlag = false;
         }
     }

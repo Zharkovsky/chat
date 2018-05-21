@@ -8,10 +8,8 @@ using AngelsChat.Shared.Data;
 using AngelsChat.Server.Data.Entities;
 using AngelsChat.Server.ContractImplementations;
 using AngelsChat.Server.Data;
-using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AngelsChat.Server.Core
 {
@@ -21,329 +19,230 @@ namespace AngelsChat.Server.Core
 
         public static MainServer Current { get; } = new MainServer();
 
-        ObservableCollection<IContract> UserContracts;
+        private ObservableCollection<RoomManager> Rooms;
+        private ObservableCollection<IContract> UserContracts;
+        private Dictionary<IContract, Dictionary<int, RoomManager>> Video;
+
+        //private VideoServiceClient _videoService;
 
         public MainServer()
         {
+            Rooms = new ObservableCollection<RoomManager>();
             UserContracts = new ObservableCollection<IContract>();
-            Log.Info("Инициализация MainServer");
-            
-            Log.Info("Аутентификация серверного аккаунта");
+            Video = new Dictionary<IContract, Dictionary<int, RoomManager>>();
+            using (Context db = new Context(ServerHost.Settings.Ef))
+            {
+                db.Rooms.Include(_ => _.Users).Include(_ => _.Owner).ToList().ForEach(room => Rooms.Add(new RoomManager(room)));
+            }
+
+            //_videoService = new VideoServiceClient();
+            //_videoService.Open();
+            //_videoService.ShowVideo(null,null,null);
         }
 
-        public void Logout(IContract contract)
+        #region Rooms
+
+        public RoomManager GetRoom(RoomDto room)
         {
-            UserContracts.Remove(contract);
+            if (room == null) return null;
+            else return Rooms.Where(_ => _.Room.Id == room.Id).FirstOrDefault();
         }
-        
+        public List<RoomDto> GetRooms(IContract userContract)
+        {
+            using (Context db = new Context(ServerHost.Settings.Ef))
+            {
+                User user = SearchUser(db, userContract.User.Name);
+                var rooms = Rooms.Where(_ => _.GetUsers().Select(u => u.Name).Contains(user.Name)).ToList().Select(_ => Room.ToRoomDto(_.Room)).ToList();
+                return rooms;
+            }
+        }
+
+        public RoomDto CreateRoom(RoomDto room, IContract userContract)
+        {
+            using (Context db = new Context(ServerHost.Settings.Ef))
+            {
+                User user = SearchUser(db, userContract.User.Name);
+                var r = new Room(room, user);
+                db.Rooms.Add(r);
+                db.SaveChanges();
+                var rm = new RoomManager(r);
+                rm.InviteUser(new UserDto("Сервер"));
+                if(ServerContract != null)
+                    rm.UserEnter(ServerContract);
+                rm.InviteUser(User.ToUserDto(user));
+                rm.UserEnter(userContract);
+                rm.AddOnlineUser(userContract);
+                Rooms.Add(rm);
+                //db.SaveChanges();
+                return Room.ToRoomDto(rm.Room);
+            }
+        }
+
+        public void RemoveRoom(RoomDto room, IContract userContract)
+        {
+            using (Context db = new Context(ServerHost.Settings.Ef))
+            {
+                var _room = db.Rooms.Include(_ => _.Owner).Where(_ => _.Id == room.Id).FirstOrDefault();
+                var user = db.Users.Where(_ => _.Name == userContract.User.Name).FirstOrDefault();
+                if(user.Name == _room.Owner.Name)
+                {
+                    db.Rooms.Remove(_room);
+                    var r = GetRoom(room);
+                    r?.Close();
+                    Rooms.Remove(r);
+                }
+                else
+                {
+                    _room.Users.Remove(user);
+                    KickUserWithoutOwner(room, User.ToUserDto(user), userContract);
+                }
+                db.SaveChanges();
+            }
+        }
+
+        public void UpdateRoom(RoomDto room, IContract userContract)
+        {
+            using (Context db = new Context(ServerHost.Settings.Ef))
+            {
+                var _room = db.Rooms.Where(_ => _.Id == room.Id).FirstOrDefault();
+                _room.Name = room.Name;
+                db.SaveChanges();
+            }
+            var r = GetRoom(room);
+            r.UpdateRoom(room);
+        }
+
+        #endregion
+
+        #region Users
+
+        public IContract ServerContract { get; set; }
+
+        public UserDto Login(IContract userContract, LoginDto login)
+        {
+            using (Context db = new Context(ServerHost.Settings.Ef))
+            {
+                User existUser = SearchUser(db, login.Name);
+                bool ok = (existUser != null && 
+                           existUser.Password.Equals(SHA512(login.Password, existUser.Salt)) && 
+                           Rooms.Where(_ => _.IsOnline(login.Name)).Count() == 0);
+                if (!ok) return null;
+                userContract.User = existUser;
+                AddToOnlineUsers(userContract);
+                return User.ToUserDto(userContract.User);
+            }
+        }
+        public void Logout(IContract contract) => UserLeave(contract)/*RemoveOnlineUser(contract)*/;
+
+        public UserDto Registration(IContract userContract, LoginDto login)
+        {
+            using (Context db = new Context(ServerHost.Settings.Ef))
+            {
+                if (SearchUser(db, login.Name) != null) return null;
+                var salt = GenSalt(32);
+                var existUser = new User(login.Name, SHA512(login.Password, salt)) { Date = DateTime.Now, Salt = salt };
+                db.Users.Add(existUser);
+                db.SaveChanges();
+                return Login(userContract, login);
+            }
+        }
+
+        private string SHA512(string input, string salt)
+        {
+            var bytes = System.Text.Encoding.UTF8.GetBytes(input + salt);
+            using (var hash = System.Security.Cryptography.SHA512.Create())
+            {
+                var hashedInputBytes = hash.ComputeHash(bytes);
+
+                // Convert to text
+                // StringBuilder Capacity is 128, because 512 bits / 8 bits in byte * 2 symbols for byte 
+                var hashedInputStringBuilder = new System.Text.StringBuilder(128);
+                foreach (var b in hashedInputBytes)
+                    hashedInputStringBuilder.Append(b.ToString("X2"));
+                return hashedInputStringBuilder.ToString();
+            }
+        }
+
+        private string Hash(string password, string salt)
+        {
+            using (SHA512 shaM = new SHA512Managed())
+            {
+                var hash = shaM.ComputeHash(Encoding.ASCII.GetBytes(password + salt));
+                return Encoding.ASCII.GetString(hash);
+            }
+        }
+
+        private string GenSalt(int length)
+        {
+            RNGCryptoServiceProvider p = new RNGCryptoServiceProvider();
+            var salt = new byte[length];
+            p.GetBytes(salt);
+            return Convert.ToBase64String(salt);
+        }
+
+        public UserDto UpdateProfile(IContract userContract, LoginDto login)
+        {
+            using (Context db = new Context(ServerHost.Settings.Ef))
+            {
+                User existUser = SearchUser(db, userContract.User.Name);
+                existUser.Password = login.Password;
+                db.SaveChanges();
+                //if (SearchUser(db, login.Name) == null)
+                //{
+                //    Rooms.ToList().ForEach(_ => _.UpdateUserProfile(existUser, login.Name));
+                //    existUser.Name = login.Name;
+                //    if (!String.IsNullOrEmpty(login.Password)) existUser.Password = login.Password;
+                //    userContract.User = existUser;
+                //    db.SaveChanges();
+                //    return User.ToUserDto(userContract.User);
+                //}
+                //else return null;
+                return User.ToUserDto(existUser);
+            }
+        }
+
         public void UserEnter(IContract userContract)
         {
-            Log.Debug("Пользователь {0} вошел", userContract.User.Name);
-            UserContracts.Add(userContract);
+            Rooms.ToList().ForEach(room => room.UserEnter(userContract));
+            if (UserContracts.ToList().Where(_ => _.User.Name == userContract.User.Name).Count() == 0)
+                UserContracts.Add(userContract);
         }
         public void UserLeave(IContract userContract)
         {
-            Log.Debug("Пользователь {0} вышел", userContract.User.Name);
+            Rooms.ToList().ForEach(room => room.UserLeave(userContract));
             UserContracts.Remove(userContract);
-            RemoveOnlineUser(userContract);
         }
 
-        private string GetMd5Hash(byte[] array)
-        {
-            //определение хэша
-            MD5 md5Hasher = MD5.Create();
-            byte[] data = md5Hasher.ComputeHash(array);
-            StringBuilder sBuilder = new StringBuilder();
-            for (int i = 0; i < data.Length; i++)
-                sBuilder.Append(data[i].ToString("x2"));
-            return sBuilder.ToString();
-        }
+        private void AddToOnlineUsers(IContract userContract) => 
+            Rooms
+            .Where(_ => 
+                _.GetUsers()
+                 .Where(u=>u.Name.ToLower() == userContract.User.Name.ToLower())
+                 .Count() != 0)
+            .ToList()
+            .ForEach(room => room.AddOnlineUser(userContract));
+        private void RemoveOnlineUser(IContract userContract) => Rooms.ToList().ForEach(room => room.RemoveOnlineUser(userContract));
 
-        public byte[] GetFile( UserContract userContract, FileMessageDto file)
-        {
-            using (Context db = new Context(ServerHost.Settings.Ef))
-            {
-                byte[] a =  db.FileMessages.Where(_ => _.Date == file.Date && _.User.Name == file.Owner.Name && _.FileName == file.FileName).Select(_ => _.Content.Content).FirstOrDefault();
-                return a;
-            }
-        }
-        
+        private User SearchUser(Context db, string name) => db.Users.Include(_ => _.Rooms).Include(_ => _.Image).Where(b => b.Name == name).FirstOrDefault();
+        //private User SearchUser(Context db, string name) => db.Users.Include(_=>_.Rooms).Include(_ => _.Image).Where(b => b.Name == name).FirstOrDefault();
+        #endregion
 
-        public void SendMessage(IContract userContract, MessageDto message)
-        {
-            Log.Trace("Отправка сообщения на сервере");
-            using (Context db = new Context(ServerHost.Settings.Ef))
-            {
-                User existUser = SearchUser(db, userContract.User.Name);
-                message.Date = DateTime.Now;
-                if (message is FileMessageDto fileMessage)
-                {
-                    FileMessage userMessage = new FileMessage
-                    {
-                        Date = fileMessage.Date,
-                        FileName = fileMessage.FileName,
-                        FileWeight = fileMessage.FileWeight,
-                        Text = fileMessage.MessageText,
-                        User = existUser,
-                        UserName = existUser.Name
-                    };
-                    userMessage.Content = new BinaryContent { Content = userContract.GetUserFile(), Message = userMessage };
-                    if (userMessage.Content.Content != null && fileMessage.Hash == GetMd5Hash(userMessage.Content.Content))
-                    {
-                        db.FileMessages.Add(userMessage);
-                        db.Messages.Add(userMessage);
-                    }
-                    else
-                    {
-                        db.Messages.Add(new Message(existUser, message));
-                    }
-                    //userContract.ClearUserFile();
-                }
-                else
-                {
-                    db.Messages.Add(new Message(existUser, message));
-                }
-                db.SaveChanges();
-            }
+        #region Messages
 
-            lock (this)
-            {
-                Log.Trace("Рассылка сообщения пользователям");
-                foreach (var user in UserContracts)
-                    try { user.SendReply(message); }
-                    catch (Exception e) { Log.Error(e); }
-            }
-        }
+        public void SendMessage(IContract userContract, MessageDto message) => GetRoom(message.Room)?.SendMessage(userContract, message);
+        public List<MessageDto> LoadMessages(RoomDto room, IContract userContract, int number, DateTime? date) => GetRoom(room).LoadMessages(userContract, number, date);
 
-        public void SetImage(IContract userContract, ImageDto image)
-        {
-            Log.Trace("Установка изображения пользователя на сервере");
-            using (Context db = new Context(ServerHost.Settings.Ef))
-            {
-                // Search user
-                User existUser = SearchUser(db, userContract.User.Name);
+        #endregion
 
-                // Remove existed image
-                if (existUser != null && existUser.Image != null)
-                    db.Images.Remove(existUser.Image);
+        #region Actions
 
-                // Create and add new image to DB
-                Image userImage = new Image(existUser, image);
-                existUser.Image = userImage;
-                db.Images.Add(userImage);
-
-                db.SaveChanges();
-
-                userContract.User = existUser;
-            }
-            lock (this)
-            {
-                Log.Trace("Рассылка изображения пользователям");
-                foreach (var user in UserContracts)
-                    try { user.ChangeUserImage(User.ToUserDto(userContract.User), image); }
-                    catch (Exception e) { Log.Error(e); }
-            }
-        }
-        
-        public UserDto Login(IContract userContract, LoginDto login)
-        {
-            Log.Trace("Авторизация на сервере");
-            using (Context db = new Context(ServerHost.Settings.Ef))
-            {
-                User existUser = SearchUser(db, login.Name);
-                if (existUser != null && existUser.Password.Equals(login.Password) && !UserContracts.Any(_=>_.User.Name.ToLower() == login.Name.ToLower()))
-                {
-                    userContract.User = existUser;
-                    UserContracts.Remove(UserContracts.Where(_ => _.User.Name == existUser.Name).FirstOrDefault());
-                    AddToOnlineUsers(userContract);
-                    Log.Debug("Авторизация успешна");
-                    return User.ToUserDto(userContract.User);
-                }
-                else
-                {
-                    Log.Debug("Авторизация провалена");
-                    return null;
-                }
-            }
-        }
-        public UserDto SignUp(IContract userContract, LoginDto login)
-        {
-            Log.Trace("Регистрация на сервере");
-            using (Context db = new Context(ServerHost.Settings.Ef))
-            {
-                User existUser = SearchUser(db, login.Name);
-
-                if (existUser == null)
-                {
-                    existUser = new User(login.Name, login.Password);
-                    existUser.Date = DateTime.Now;
-                    db.Users.Add(existUser);
-                    db.SaveChanges();
-
-                    userContract.User = existUser;
-                    
-                    UserContracts.Remove(UserContracts.Where(_ => _.User.Name == existUser.Name).FirstOrDefault());
-                    AddToOnlineUsers(userContract);
-                    Log.Debug("Регистрация успешна");
-                    return User.ToUserDto(userContract.User);
-                }
-                else
-                {
-                    Log.Debug("Регистрация провалена");
-                    return null;
-                }
-            }
-        }
-
-        public void SendVoice(IContract userContract, List<byte[]> voice)
-        {
-            lock (this)
-            {
-                Task.Factory.StartNew(() => SaveVoice(userContract, voice));
-
-                foreach (var user in UserContracts)
-                    try { user.SendVoiceForUser(voice, User.ToUserDto(userContract.User)); }
-                    catch (Exception e) { Log.Error(e); }
-            }
-        }
-
-        private void SaveVoice(IContract userContract, List<byte[]> video) { }
-
-        public void SendVideo(IContract userContract, List<byte[]> video)
-        {
-            lock (this)
-            {
-                Task.Factory.StartNew(()=> SaveVideo(userContract, video));
-                
-                foreach (var user in UserContracts)
-                    try
-                    {
-                        user.SendVideoForUser(video, User.ToUserDto(userContract.User));
-                    }
-                    catch (Exception e) { Log.Error(e); }
-            }
-        }
-        private void SaveVideo(IContract userContract, List<byte[]> video)
-        {
-            //using (Context db = new Context(ServerHost.Settings.Ef))
-            //{
-            //    Video userVideo = db.Videos
-            //        .Include(_ => _.VideoList)
-            //        .Where(_ => _.User.Name == userContract.User.Name)
-            //        .FirstOrDefault();
-            //    if (userVideo == null)
-            //    {
-            //        userVideo = new Video
-            //        {
-            //            User = db.Users.Where(_ => _.Name == userContract.User.Name).FirstOrDefault(),
-            //            Date = DateTime.Now
-            //        };
-            //        db.Videos.Add(userVideo);
-            //        db.SaveChanges();
-            //    }
-            //    db.VideoElements.AddRange(video.Select(_ => new VideoElement { Data = _, Video = userVideo }));
-            //    db.SaveChanges();
-            //}
-        }
-
-        public List<UserDto> GetOnlineUsers(IContract userContract)
-        {
-            Log.Trace("Получение онлайн пользователей");
-            return UserContracts.Select(u => User.ToUserDto(u.User)).ToList();
-        }
-
-        private User SearchUser(Context db, string name)
-        {
-            try
-            {
-                Log.Trace("Поиск пользователя");
-                User existUser = db.Users.Include(_ => _.Image)
-                .Where(b => b.Name == name)
-                .FirstOrDefault();
-                return existUser;
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
-            }
-            return null;
-        }
-        
-
-        private void AddToOnlineUsers(IContract userContract)
-        {
-            lock (this)
-            {
-                Log.Trace("Добавление пользователя ко всем");
-                foreach (var user in UserContracts)
-                    try
-                    {
-                        user.AddOnlineUser(User.ToUserDto(userContract.User));
-                    }
-                    catch (Exception e) { Log.Error(e); }
-            }
-        }
-        private void RemoveOnlineUser(IContract userContract)
-        {
-            lock(this)
-            {
-                Log.Trace("Удаление пользователя");
-                foreach (var user in UserContracts)
-                    try { user.RemoveOnlineUser(User.ToUserDto(userContract.User)); }
-                    catch (Exception e) { Log.Error(e); }
-            }       
-        }
-
-        public List<MessageDto> LoadMessages(IContract userContract, int number, DateTime? date)
-        {
-            if (date == null) date = DateTime.Now;
-            using (Context db = new Context(ServerHost.Settings.Ef))
-            {
-                //db.Database.Log = Console.Write;
-                try
-                {
-                    Log.Trace("Загрука сообщений");
-
-                    return db.Messages.Include(_ => _.User.Image).Include(_ => _.User)
-                        .Where(_ => _.Date < date && _.Date > userContract.User.Date)
-                        .OrderByDescending(_ => _.Date)
-                        .Take(number)
-                        .ToList().Select(_ =>
-                        {
-                            if (_ is FileMessage message)
-                            {
-                                return db.FileMessages
-                                        .Include(fileMessage => fileMessage.Content)
-                                        .Include(fileMessage => fileMessage.User.Image)
-                                        .Include(fileMessage => fileMessage.User)
-                                        .Where(fileMessage => fileMessage.Date == message.Date && fileMessage.UserName == message.UserName && fileMessage.FileName == message.FileName)
-                                        .ToList()
-                                        .Select(fileMessage => FileMessage.ToFileMessageDto(fileMessage))
-                                        .FirstOrDefault()
-                                    ;
-                            }
-                            else
-                            {
-                                return Message.ToMessageDto(_);
-                            }
-                        })
-                        .ToList();
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e);
-                }
-                return null;
-            }
-        }
-
+        public void SetAvatar(IContract userContract, ImageDto image) => Rooms.ToList().ForEach(room => room.SetAvatar(userContract, image));
         public ImageDto GetAvatar(string name)
         {
             using (Context db = new Context(ServerHost.Settings.Ef))
             {
                 try
                 {
-                    Log.Trace("Загрука аватарки {0}", name);
                     return Image.ToImageDto(db.Images.Where(_ => _.User.Name == name).FirstOrDefault());
                 }
                 catch (Exception e)
@@ -353,13 +252,44 @@ namespace AngelsChat.Server.Core
                 return null;
             }
         }
-        public List<UserDto> GetUsers()
+
+        public void SendVoice(IContract userContract, List<byte[]> voice)
+        {
+            if (Video.Keys.Contains(userContract))
+                Video[userContract].ToList().ForEach(_ => _.Value.SendVoice(userContract, voice));
+
+        }
+        public void SendVideo(RoomDto room, IContract userContract, List<byte[]> video)
+        {
+            //GetRoom(room).SendVideo(userContract, video);
+
+            if (!Video.Keys.Contains(userContract)) Video.Add(userContract, new Dictionary<int, RoomManager>());
+            if (!Video[userContract].Keys.Contains(room.Id)) Video[userContract].Add(room.Id, GetRoom(room));
+            Video[userContract].ToList().ForEach(_ => _.Value.SendVideo(userContract, video));
+        }
+        public void AddRoomForVideo(RoomDto room, IContract userContract)
+        {
+            if (!Video.Keys.Contains(userContract)) Video.Add(userContract, new Dictionary<int, RoomManager>());
+            if (!Video[userContract].Keys.Contains(room.Id)) Video[userContract].Add(room.Id, GetRoom(room));
+        }
+        public void RemoveRoomFromVideo(RoomDto room, IContract userContract)
+        {
+            if (Video.Keys.Contains(userContract) && Video[userContract].Keys.Contains(room.Id))
+            {
+                GetRoom(room).SendVideo(userContract, null);
+                Video[userContract].Remove(room.Id);
+            }
+        }
+
+
+        public List<UserDto> GetOnlineUsers(RoomDto room) => GetRoom(room).GetOnlineUsers();
+        public List<UserDto> GetUsers(RoomDto room) => GetRoom(room)?.GetUsers();
+        public List<UserDto> GetAllUsers()
         {
             using (Context db = new Context(ServerHost.Settings.Ef))
             {
                 try
                 {
-                    Log.Trace("Загрука пользователей");
                     return db.Users.ToList().Select(_ => User.ToUserDto(_)).ToList();
                 }
                 catch (Exception e)
@@ -369,13 +299,65 @@ namespace AngelsChat.Server.Core
                 return null;
             }
         }
+        public bool IsOnline(RoomDto room, string name) => GetRoom(room).IsOnline(name);
 
-        public bool IsOnline(string name)
+        public byte[] GetFile(UserContract userContract, FileMessageDto file)
         {
-            try { Log.Trace("Пользователь {0} онлайн?", name); return UserContracts.Where(_ => _.User.Name == name && name != "Сервер").FirstOrDefault() == null ? false : true; }
-            catch (Exception e) { Log.Error(e); return false; }
+            using (Context db = new Context(ServerHost.Settings.Ef))
+            {
+                byte[] a = db.FileMessages.Where(_ => _.Date == file.Date && _.User.Name == file.Owner.Name && _.FileName == file.FileName).Select(_ => _.Content.Content).FirstOrDefault();
+                return a;
+            }
         }
-        
 
+        public void InviteUser(RoomDto room, UserDto person, IContract userContract)
+        {
+            var rm = Rooms.Where(_ => _.Room.Id == room.Id).FirstOrDefault();
+            if (rm.GetUsers().Select(_ => _.Name).Contains(person.Name)) return;
+            if(rm.Room.Owner.Name == userContract.User.Name)
+            {
+                rm.InviteUser(person);
+
+                var invitedUserContract = UserContracts.Where(_ => _.User.Name == person.Name).FirstOrDefault();
+                if (invitedUserContract == null) return;
+
+                rm.AddUser(invitedUserContract, rm.Room);
+                rm.UserEnter(invitedUserContract);
+                rm.AddOnlineUser(invitedUserContract);
+            }
+        }
+
+        public void KickUser(RoomDto room, UserDto person, IContract userContract)
+        {
+            var kickedUserContract = UserContracts.Where(_ => _.User.Name == person.Name).FirstOrDefault();
+            if (kickedUserContract == null) return;
+            var rm = Rooms.Where(_ => _.Room.Id == room.Id).FirstOrDefault();
+            if(rm.Room.Owner.Name == userContract.User.Name)
+            {
+                rm.RemoveUser(kickedUserContract, rm.Room);
+                rm.UserLeave(kickedUserContract);
+                rm.RemoveOnlineUser(kickedUserContract);
+
+                if (!rm.GetUsers().Select(_ => _.Name).Contains(person.Name)) return;
+                rm.KickUser(person);
+            }
+        }
+
+        private void KickUserWithoutOwner(RoomDto room, UserDto person, IContract userContract)
+        {
+            var kickedUserContract = UserContracts.Where(_ => _.User.Name == person.Name).FirstOrDefault();
+            if (kickedUserContract == null) return;
+            var rm = Rooms.Where(_ => _.Room.Id == room.Id).FirstOrDefault();
+
+            rm.RemoveUser(kickedUserContract, rm.Room);
+            rm.UserLeave(kickedUserContract);
+            rm.RemoveOnlineUser(kickedUserContract);
+
+            if (!rm.GetUsers().Select(_ => _.Name).Contains(person.Name)) return;
+            rm.KickUser(person);
+
+
+        }
+        #endregion
     }
 }

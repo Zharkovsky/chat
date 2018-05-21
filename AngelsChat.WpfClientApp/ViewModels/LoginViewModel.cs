@@ -44,12 +44,12 @@ namespace AngelsChat.WpfClientApp.ViewModels
         }
 
         ClientService _client;
-        ChatViewModel _chatViewModel;
+        ChatRoomsViewModel _chatViewModel;
         SignUpViewModel _signUpViewModel;
 
         public ICommand LoginCommand { get; private set; }
 
-        public LoginViewModel(ClientService client, SignUpViewModel signUpViewModel, ChatViewModel chatViewModel)
+        public LoginViewModel(ClientService client, SignUpViewModel signUpViewModel, ChatRoomsViewModel chatViewModel)
         {
             _client = client;
             _signUpViewModel = signUpViewModel;
@@ -162,7 +162,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
             });
         }
 
-        private string ConvertToUnsecureString(System.Security.SecureString securePassword)
+        public static string ConvertToUnsecureString(System.Security.SecureString securePassword)
         {
             if (securePassword == null)
             {

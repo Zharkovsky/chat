@@ -1,0 +1,313 @@
+﻿<UserControl x:Class="AngelsChat.WpfClientApp.Views.ChatRoomsView"
+             x:Name="ChatRoomsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AngelsChat.WpfClientApp.Views"
+             xmlns:root="clr-namespace:AngelsChat.WpfClientApp"
+             xmlns:views="clr-namespace:AngelsChat.WpfClientApp.Views"
+             xmlns:vm="clr-namespace:AngelsChat.WpfClientApp.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ResourceDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="170"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0" Background="#626567">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Background="#626567">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0" Height="25" Width="25" Margin="15,5,0,5"
+                      Background="Transparent" ToolTip="Настройки" Cursor="Hand">
+                    <Grid.InputBindings>
+                        <MouseBinding Gesture="LeftClick" Command="{Binding ToSettingsCommand}" />
+                    </Grid.InputBindings>
+                    <Path Fill="Black" Stretch="Fill" Data="{StaticResource Settings}"/>
+                </Grid>
+                <!--<Button Content="*" Width="20" Height="20" Command="{Binding ToSettingsCommand}" Grid.Column="0" Background="#CCC" Foreground="White"/>-->
+                <TextBlock Grid.Column="1" Margin="5,5,5,5" Text="AngelsChat" Foreground="Black" FontSize="20" FontWeight="Medium"/>
+            </Grid>
+
+            <Grid Grid.Row="1" Background="#626567">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding EditProfile}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="20"/>
+                </Grid.RowDefinitions>
+
+                <ListBox Background="#626567" Grid.Row="0" ItemsSource="{Binding Rooms}" SelectedItem="{Binding SelectedRoom}" ItemContainerStyle="{StaticResource ListBoxtemStyleNoHighlighting}">
+                    <ListBox.Style>
+                        <Style TargetType="ListBox">
+                            <Setter Property="BorderThickness" Value="0"/>
+                        </Style>
+                    </ListBox.Style>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="White" BorderThickness="1" CornerRadius="5" Background="#424949" Width="150" MinHeight="50">
+                                <StackPanel Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Grid FlowDirection="LeftToRight" >
+                                        <Grid.Style>
+                                            <Style TargetType="Grid">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=IsEditingName}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox x:Name="RoomName" Grid.Column="0" HorizontalAlignment="Center"  FontSize="14" FontWeight="Medium" Text="{Binding Path=Name}" Foreground="Black">
+                                            <TextBox.InputBindings>
+                                                <KeyBinding Key="Enter" Command="{Binding RenameRoomCommand}" CommandParameter="{Binding ElementName=RoomName}"/>
+                                            </TextBox.InputBindings>
+                                        </TextBox>
+                                        <Grid Grid.Column="1" Height="7" Width="7" Margin="10,5,0,5" Background="Transparent" ToolTip="Сохранить" Cursor="Hand">
+                                            <Grid.InputBindings>
+                                                <MouseBinding Gesture="LeftClick" Command="{Binding RenameRoomCommand}" CommandParameter="{Binding ElementName=RoomName}"/>
+                                            </Grid.InputBindings>
+                                            <Path Fill="Black" Stretch="Fill" Data="{StaticResource Ok}"/>
+                                        </Grid>
+                                        <Grid Grid.Column="2" Height="7" Width="7" Margin="10,5,5,5" Background="Transparent" ToolTip="Отменить" Cursor="Hand">
+                                            <Grid.InputBindings>
+                                                <MouseBinding Gesture="LeftClick" Command="{Binding RenameCommand}" />
+                                            </Grid.InputBindings>
+                                            <Path Fill="Black" Stretch="Fill" Data="{StaticResource Cross}"/>
+                                        </Grid>
+                                    </Grid>
+                                    
+                                    <Expander Grid.Row="1" Grid.ColumnSpan="4" IsExpanded="{Binding Showed}" FlowDirection="RightToLeft">
+                                        <Expander.Style>
+                                            <Style TargetType="Expander">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=IsEditingName}" Value="True">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Expander.Style>
+                                        <Expander.Header>
+                                            <Grid HorizontalAlignment="Stretch">
+                                                
+                                                <ScrollViewer Width="100" Grid.Column="1" VerticalScrollBarVisibility="Disabled" FlowDirection="LeftToRight" HorizontalScrollBarVisibility="Auto">
+
+                                                    <Grid>
+                                                        <TextBlock HorizontalAlignment="Center"  FontSize="14" FontWeight="Medium" Text="{Binding Name}" Foreground="White">
+                                                            
+                                                        </TextBlock>
+                                                        
+                                                        
+                                                    </Grid>
+                                                </ScrollViewer>
+                                            </Grid>
+                                        </Expander.Header>
+                                        <Grid FlowDirection="LeftToRight">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Grid Grid.Row="0" Margin="5,0,0,0" Background="Transparent" Cursor="Hand">
+                                                <Grid.InputBindings>
+                                                    <MouseBinding Gesture="LeftClick" Command="{Binding MuteAllCommand}" />
+                                                </Grid.InputBindings>
+                                                <TextBlock Text="● Mute all" HorizontalAlignment="Left"/>
+                                            </Grid>
+                                            <Grid Grid.Row="1" Margin="5,0,0,0" Background="Transparent" Cursor="Hand">
+                                                <Grid.InputBindings>
+                                                    <MouseBinding Gesture="LeftClick" Command="{Binding InviteCommand}" />
+                                                </Grid.InputBindings>
+                                                <TextBlock Text="● Add person" HorizontalAlignment="Left"/>
+                                            </Grid>
+                                            <!--<Grid Grid.Row="2" Margin="5,0,0,0" Background="Transparent" Cursor="Hand">
+                                                <Grid.InputBindings>
+                                                    <MouseBinding Gesture="LeftClick" Command="{Binding LeaveRoomCommand}" />
+                                                </Grid.InputBindings>
+                                                <TextBlock Text="● Leave chatroom" HorizontalAlignment="Left"/>
+                                            </Grid>-->
+                                            <!--<Grid Grid.Row="2" Margin="5,0,0,0" Background="Transparent" Cursor="Hand">
+                                                <Grid.InputBindings>
+                                                    <MouseBinding Gesture="LeftClick" Command="{Binding TurnOffMicrophoneCommand}" />
+                                                </Grid.InputBindings>
+                                                <TextBlock Text="● Turn off microphone" HorizontalAlignment="Left"/>
+                                            </Grid>-->
+                                            <Grid Grid.Row="3" Margin="5,0,0,0" Background="Transparent" ToolTip="Rename" Cursor="Hand">
+                                                <Grid.InputBindings>
+                                                    <MouseBinding Gesture="LeftClick" Command="{Binding RenameCommand}" CommandParameter="{Binding Path=.}"/>
+                                                </Grid.InputBindings>
+                                                <TextBlock Text="● Rename chatroom" HorizontalAlignment="Left"/>
+                                            </Grid>
+                                        </Grid>
+                                    </Expander>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <Grid Grid.Row="1" Background="#626567">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0" Height="35" Width="35" Margin="20 0 0 0" Background="Transparent" ToolTip="Удалить комнату" Cursor="Hand">
+                        <Grid.InputBindings>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding RemoveCommand}" CommandParameter="{Binding SelectedRoom}" />
+                        </Grid.InputBindings>
+                        <Path Fill="White" Stretch="Fill" Data="{StaticResource RemoveRoom}"/>
+                    </Grid>
+                    <Grid Grid.Column="1" Height="35" Width="35" Margin="0 0 20 0" Background="Transparent" ToolTip="Создать комнату" Cursor="Hand">
+                        <Grid.InputBindings>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding AddCommand}" />
+                        </Grid.InputBindings>
+                        <Path Fill="White" Stretch="Fill" Data="{StaticResource AddRoom}"/>
+                    </Grid>
+                    <!--<Button Content="-" Command="{Binding RemoveCommand}" CommandParameter="{Binding SelectedRoom}" Grid.Column="0" Background="#FFDE5353" Foreground="White"/>-->
+                    <!--<Button Content="+" Command="{Binding AddCommand}" Grid.Column="1" Background="#FF4CAA4C" Foreground="White"/>-->
+                </Grid>
+
+                <TextBlock Grid.Row="2" Background="#626567" Text="©ZharkovskyConnection" Foreground="Black" TextAlignment="Center"/>
+
+
+            </Grid>
+
+           
+
+
+            <!--<Grid Grid.Row="1">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=EditSettings}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding SelectedRoom}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <local:RoomSettingsView DataContext="{Binding RoomSettingsViewModel}"/>
+            </Grid>-->
+
+            <Grid Grid.Row="1" Margin="15 0">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=EditProfile}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <local:EditUserProfileView DataContext="{Binding EditUserProfileViewModel}"/>
+            </Grid>
+
+        </Grid>
+
+        <Grid Grid.Column="1">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedRoom}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <local:ChatView DataContext="{Binding SelectedRoom}"/>
+        </Grid>
+
+        
+
+
+
+        <Grid Grid.Column="1" Margin="20 35">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedRoom}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontSize="26" TextWrapping="Wrap" Text="Добро пожаловать в AngelsChat!"/>
+            <TextBlock Grid.Row="1" TextWrapping="Wrap" Text="Клиентское приложение AngelsChat - многопользовательский чат, выполненный на WPF. Приложение поддерживает общение в комнатах, загрузку истории сообщений, передачу файлов в сообщении, видеоконференцию в пределах одной выбранной комнаты."/>
+        </Grid>
+
+        <Grid Grid.ColumnSpan="2" Grid.Row="0">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SearchUserViewModel}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <local:SearchUserView DataContext="{Binding SearchUserViewModel}"/>
+        </Grid>
+
+        <Grid Grid.ColumnSpan="2" Grid.Row="0">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding EditUserProfileViewModel.MakePhotoViewModel.OpenImageFlag}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <local:PhotoView DataContext="{Binding EditUserProfileViewModel.MakePhotoViewModel}"/>
+        </Grid>
+
+    </Grid>
+</UserControl>

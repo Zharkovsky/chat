@@ -14,6 +14,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
     {
         private readonly FileMessageDto _model;
         public string FileName { get => _model.FileName; }
+        public string FileNameForButton { get => "Загрузить файл: " + _model.FileName; }
         public string MessageText { get => _model.MessageText; }
         public string Hash { get => _model.Hash; }
         public BinaryBodyViewModel(FileMessageDto model, MessageViewModel.GetFileDelegate _getFile, MessageViewModel.DownloadFileDelegate _downloadFile, ErrorViewModel errorViewModel)
@@ -69,6 +70,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
         public void SaveAction(object obj = null)
         {
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.FileName = FileName;
             dlg.DefaultExt = ".txt";
             dlg.Filter = "Text documents (.txt)|*.txt";
             bool? result = dlg.ShowDialog();

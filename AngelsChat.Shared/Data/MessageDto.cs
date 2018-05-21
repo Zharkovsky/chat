@@ -7,20 +7,23 @@ namespace AngelsChat.Shared.Data
         public UserDto Owner { get; set; }
         public string MessageText { get; set; }
         public System.DateTime Date { get; set; }
+        public RoomDto Room { get; set; }
 
         public MessageDto() { }
 
-        public MessageDto(UserDto owner, string text)
+        public MessageDto(RoomDto room, UserDto owner, string text)
         {
             MessageText = text;
             Owner = owner;
+            Room = room;
         }
 
-        public MessageDto(UserDto owner, string text, System.DateTime date)
+        public MessageDto(RoomDto room, UserDto owner, string text, System.DateTime date)
         {
             MessageText = text;
             Owner = owner;
             Date = date;
+            Room = room;
         }
 
         public MessageDto(string text)

@@ -15,7 +15,7 @@ namespace AngelsChat.Server.Settings
         {
             Connection = new ConnectionSettings { Ip = "localhost", Port = "9080" };
             Log = new LogSettings { Lvl = "Trace", Rule = new FileRuleLogSettings { FileSource = SettingsPath.FolderPath } };
-            Ef = new EfSettings { Source = "(localdb)\\MSSQLLocalDB", Name = "chatdatabase2" };
+            Ef = new EfSettings { Source = "(localdb)\\MSSQLLocalDB", Name = "AngelsChat" };
         }
         
         public static Settings Read()

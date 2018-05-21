@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Data\FileMessageDto.cs" />
     <Compile Include="Data\FilePartDto.cs" />
+    <Compile Include="Data\RoomDto.cs" />
     <Compile Include="Operations\IChatDuplexCallback.cs" />
     <Compile Include="Data\ImageDto.cs" />
     <Compile Include="Data\LoginDto.cs" />

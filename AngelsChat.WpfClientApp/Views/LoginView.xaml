@@ -38,7 +38,15 @@
 				   Grid.Row="1"
 				   Grid.Column="1"
 				   Margin="4" Background="#1F1F1F" Foreground="#888888" FontSize="16"
-				   Text="{Binding UserName}" />
+				   Text="{Binding UserName}" >
+            <TextBox.InputBindings>
+                <KeyBinding 
+                    Key="Enter" 
+                    Command="{Binding LoginCommand}"
+                    CommandParameter="{Binding ElementName=LoginControl}"
+                    />
+            </TextBox.InputBindings>
+        </TextBox>
 
         <TextBlock Grid.Row="2"
 				   Grid.Column="0"

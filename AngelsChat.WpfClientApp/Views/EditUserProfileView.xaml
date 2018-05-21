@@ -1,0 +1,104 @@
+﻿<UserControl x:Class="AngelsChat.WpfClientApp.Views.EditUserProfileView"
+             x:Name="UserProfileControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+            xmlns:views="clr-namespace:AngelsChat.WpfClientApp.Views"
+    xmlns:helper="clr-namespace:AngelsChat.WpfClientApp.Helpers"
+             
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AngelsChat.WpfClientApp.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ResourceDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.Resources>
+            <helper:ImageConverter x:Key="imageConverter"/>
+            <helper:VideoConverter x:Key="videoConverter" />
+            <helper:MessageDateConverter x:Key="messageDateConverter" />
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="70"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Height="auto">
+            <Grid Height="100" MaxWidth="100" Margin="0 0 0 0" Background="Transparent">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Hidden"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=MakePhotoViewModel.Image, Converter={StaticResource ResourceKey=imageConverter}}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <Path Fill="White" Stretch="Fill" Data="{StaticResource NoImage}"/>
+            </Grid>
+            <Image x:Name="image" Height="100" Source="{Binding Path=MakePhotoViewModel.Image, Converter={StaticResource ResourceKey=imageConverter}}" VerticalAlignment="Bottom">
+                <Image.InputBindings>
+                    <MouseBinding MouseAction="LeftClick" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type views:EditUserProfileView}}, Path=DataContext.OpenImage}" CommandParameter="{Binding Path=.}"/>
+                </Image.InputBindings>
+            </Image>
+        </Grid>
+
+        <Grid Grid.Row="1" x:Name="PhotoButton">
+            <Button Command="{Binding MakePhoto}" Content="Сделать фото">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                    </Style>
+                </Button.Style>
+            </Button>
+        </Grid>
+        
+        <TextBlock Grid.Row="2" Text="User name" Foreground="#ccc" FontSize="16"/>
+        <Grid Grid.Row="3">
+            <TextBox x:Name="UserNameInVM" IsEnabled="False" Text="{Binding Name}" FontSize="14" FontWeight="Medium" Foreground="Black" Padding="5" Height="30"/>
+        </Grid>
+
+        <TextBlock Grid.Row="4" Margin="0 10 0 0" Text="Password" Foreground="#ccc" FontSize="16"/>
+        <PasswordBox x:Name="UserPassword"
+					 Grid.Row="5"
+                     FontSize="14" FontWeight="Medium" Foreground="Black" Padding="5" Height="30">
+        </PasswordBox>
+        
+        
+
+        <Grid Grid.Row="6" Background="#626567">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" Height="35" Width="35" Margin="20 0 0 0" Background="Transparent" ToolTip="Вернуться" Cursor="Hand">
+                <Grid.InputBindings>
+                    <MouseBinding Gesture="LeftClick" Command="{Binding BackFromSettings}" CommandParameter="{Binding SelectedRoom}" />
+                </Grid.InputBindings>
+                <Path Fill="White" Stretch="Fill" Data="{StaticResource Cancel}"/>
+            </Grid>
+            <Grid Grid.Column="1" Height="35" Width="35" Margin="0 0 20 0" Background="Transparent" ToolTip="Сохранить" Cursor="Hand">
+                <Grid.InputBindings>
+                    <MouseBinding Gesture="LeftClick" Command="{Binding SaveSettings}" CommandParameter="{Binding ElementName=UserProfileControl}" />
+                </Grid.InputBindings>
+                <Path Fill="White" Stretch="Fill" Data="{StaticResource Tick}"/>
+            </Grid>
+            <!--<Button Content="-" Command="{Binding RemoveCommand}" CommandParameter="{Binding SelectedRoom}" Grid.Column="0" Background="#FFDE5353" Foreground="White"/>-->
+            <!--<Button Content="+" Command="{Binding AddCommand}" Grid.Column="1" Background="#FF4CAA4C" Foreground="White"/>-->
+        </Grid>
+    </Grid>
+</UserControl>

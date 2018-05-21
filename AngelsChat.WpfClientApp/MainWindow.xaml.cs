@@ -1,19 +1,7 @@
 ﻿using AngelsChat.Client;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Globalization;
 using AngelsChat.WpfClientApp.ViewModels;
 using System.IO;
 using NLog;
@@ -51,7 +39,7 @@ namespace AngelsChat.WpfClientApp
             //End Log config
 
             
-            DataContext = new ChatViewModel(_client, ShowMessage);
+            DataContext = new ChatRoomsViewModel(_client, ShowMessage);
             InitializeComponent();
 
             
@@ -77,7 +65,7 @@ namespace AngelsChat.WpfClientApp
         public void Logout(object sender, RoutedEventArgs e)
         {
             _client.Logout();
-            DataContext = new ChatViewModel(_client, ShowMessage);
+            DataContext = new ChatRoomsViewModel(_client, ShowMessage);
         }
 
         protected override void OnSourceInitialized(EventArgs e)

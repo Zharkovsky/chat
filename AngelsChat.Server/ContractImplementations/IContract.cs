@@ -1,12 +1,7 @@
 ﻿using AngelsChat.Server.Data.Entities;
 using AngelsChat.Shared.Data;
 using AngelsChat.Shared.Operations;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AngelsChat.Server.ContractImplementations
 {
@@ -16,45 +11,25 @@ namespace AngelsChat.Server.ContractImplementations
 
         void GetStarted();
 
-        void SendReply(MessageDto message);
+        void UpdateProfileOnClientSide(UserDto uer, string name);
 
-        void SendMessage(MessageDto message);
+        void ChangeUserImage(RoomDto room, UserDto user, ImageDto image);
 
-        UserDto SetImage(ImageDto image);
+        void SendVideoForUser(RoomDto room, List<byte[]> video, UserDto user);
 
-        void ChangeUserImage(UserDto user, ImageDto image);
+        void AddUser(RoomDto room, UserDto user);
 
-        UserDto Login(LoginDto login);
+        void RemoveUser(RoomDto room, UserDto user);
 
-        UserDto SignUp(LoginDto login);
+        void AddOnlineUser(RoomDto room, UserDto user);
 
-        bool CheckConnection();
-
-        List<UserDto> GetOnlineUsers();
-
-        void SendVideo(List<byte[]> video);
-
-        void SendVideoForUser(List<byte[]> video, UserDto user);
-
-        void AddOnlineUser(UserDto user);
-
-        void RemoveOnlineUser(UserDto user);
-
-        List<MessageDto> LoadMessages(int number, System.DateTime? date);
-
-        ImageDto GetAvatar(string name);
-
-        List<UserDto> GetUsers();
-
-        bool IsOnline(string name);
+        void RemoveOnlineUser(RoomDto room, UserDto user);
 
         byte[] GetUserFile();
 
         void ClearUserFile();
 
-        long GetFile(FileMessageDto file);
-
-        void SendVoiceForUser(List<byte[]> voice, UserDto user);
+        void SendVoiceForUser(RoomDto room, List<byte[]> voice, UserDto user);
 
     }
 }

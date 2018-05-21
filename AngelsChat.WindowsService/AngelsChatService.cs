@@ -20,6 +20,7 @@ namespace AngelsChat.WindowsService
         Settings Settings;
         public AngelsChatService()
         {
+            //Thread.Sleep(10000);
             InitializeComponent();
             this.CanStop = true;
             this.CanPauseAndContinue = true;
