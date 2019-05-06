@@ -1,11 +1,5 @@
 ﻿using AngelsChat.Client;
 using AngelsChat.WpfClientApp.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AngelsChat.WpfClientApp.ViewModels
 {
@@ -23,7 +17,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
                 OnPropertyChanged();
             }
         }
-        
+
 
         public ProfileViewModel(ClientService client, ChatRoomsViewModel chatRoomsViewModel)
         {
@@ -31,12 +25,11 @@ namespace AngelsChat.WpfClientApp.ViewModels
             _chatRoomsViewModel = chatRoomsViewModel;
             _makePhotoViewModel = new PhotoViewModel(_client);
 
-
             OnPropertyChanged(nameof(Name));
 
             _backFromSettings = new RelayCommand(BackFromSettingsAction);
             _saveSettings = new RelayCommand(SaveSettingsAction);
-            
+            _makePhoto = new RelayCommand(MakePhotoAction);
         }
 
         private RelayCommand _backFromSettings;
@@ -66,6 +59,22 @@ namespace AngelsChat.WpfClientApp.ViewModels
             }
         }
 
+        private RelayCommand _makePhoto;
+        public RelayCommand MakePhoto
+        {
+            get => _makePhoto;
+            private set
+            {
+                _makePhoto = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void MakePhotoAction(object obj)
+        {
+            _makePhotoViewModel.Start();
+        }
+
         private PhotoViewModel _makePhotoViewModel;
         public PhotoViewModel MakePhotoViewModel
         {
@@ -86,10 +95,10 @@ namespace AngelsChat.WpfClientApp.ViewModels
                 name = nameContatainer.UserName;
             Name = name;
             var result = _client.UpdateProfile(name, password);
-            
+
             _chatRoomsViewModel.EditProfile = false;
             //_client.UpdateRoom(_chatRoomsViewModel.Room);
         }
-        
+
     }
 }

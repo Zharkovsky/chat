@@ -86,7 +86,6 @@
     <Compile Include="Migrations\201805141721129_UserSalt.Designer.cs">
       <DependentUpon>201805141721129_UserSalt.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\VideoServiceClient.cs" />
     <Compile Include="Settings\Settings.cs" />
     <Compile Include="Data\Context.cs" />
     <Compile Include="Data\Entities\Image.cs" />
@@ -123,6 +122,8 @@
       <DependentUpon>201805141721129_UserSalt.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -131,9 +131,7 @@
     <Compile Include="ViewModels\ChatRoomsViewModel.cs" />
     <Compile Include="ViewModels\ErrorViewModel.cs" />
     <Compile Include="ViewModels\MessageViewModel.cs" />
-    <Compile Include="..\..\..\Desktop\ProfileViewModel.cs">
-      <Link>ViewModels\ProfileViewModel.cs</Link>
-    </Compile>
+    <Compile Include="ViewModels\ProfileViewModel.cs" />
     <Compile Include="ViewModels\RoomSettingsViewModel.cs" />
     <Compile Include="ViewModels\SearchUserViewModel.cs" />
     <Compile Include="ViewModels\SendFileViewModel.cs" />
@@ -143,6 +141,9 @@
     </Compile>
     <Compile Include="Views\ChatRoomsView.xaml.cs">
       <DependentUpon>ChatRoomsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ChatView.xaml.cs">
+      <DependentUpon>ChatView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditUserProfileView.xaml.cs">
       <DependentUpon>EditUserProfileView.xaml</DependentUpon>
@@ -186,10 +187,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="..\..\..\Desktop\ChatView.xaml">
+    <Page Include="Views\ChatView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-      <Link>Views\ChatView.xaml</Link>
     </Page>
     <Page Include="Views\EditUserProfileView.xaml">
       <SubType>Designer</SubType>
@@ -210,10 +210,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="..\..\..\Desktop\ChatView.xaml.cs">
-      <DependentUpon>ChatView.xaml</DependentUpon>
-      <Link>Views\ChatView.xaml.cs</Link>
     </Compile>
     <Compile Include="ViewModels\ChatRoomViewModel.cs" />
     <Compile Include="Helpers\IHavePassword.cs" />
@@ -364,8 +360,6 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\EmguCV.3.1.0.1\build\EmguCV.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EmguCV.3.1.0.1\build\EmguCV.props'))" />
     <Error Condition="!Exists('..\packages\EmguCV.3.1.0.1\build\EmguCV.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EmguCV.3.1.0.1\build\EmguCV.targets'))" />
-    <Error Condition="!Exists('..\packages\Clarius.TransformOnBuild-unofficial.1.20\build\Clarius.TransformOnBuild-unofficial.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Clarius.TransformOnBuild-unofficial.1.20\build\Clarius.TransformOnBuild-unofficial.targets'))" />
   </Target>
   <Import Project="..\packages\EmguCV.3.1.0.1\build\EmguCV.targets" Condition="Exists('..\packages\EmguCV.3.1.0.1\build\EmguCV.targets')" />
-  <Import Project="..\packages\Clarius.TransformOnBuild-unofficial.1.20\build\Clarius.TransformOnBuild-unofficial.targets" Condition="Exists('..\packages\Clarius.TransformOnBuild-unofficial.1.20\build\Clarius.TransformOnBuild-unofficial.targets')" />
 </Project>

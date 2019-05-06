@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngelsChat.Shared", "AngelsChat.Shared\AngelsChat.Shared.csproj", "{DD037795-5373-4E2C-8F1C-82CE77C2B770}"
 EndProject
@@ -18,8 +18,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngelsChat.WpfServerConfiguratorApp", "AngelsChat.WpfServerConfiguratorApp\AngelsChat.WpfServerConfiguratorApp.csproj", "{815271D2-B2DD-468A-9350-D8BC213C189F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinSound", "WinSound\WinSound\WinSound.csproj", "{28120D29-4F6E-4C3B-AB6A-900A26420B9C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngelsChat.ConsoleVideoService", "AngelsChat.ConsoleVideoService\AngelsChat.ConsoleVideoService.csproj", "{A2C1DC74-40EE-45FD-9EB7-C806C67A079A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -161,22 +159,6 @@ Global
 		{28120D29-4F6E-4C3B-AB6A-900A26420B9C}.Release|x64.Build.0 = Release|Any CPU
 		{28120D29-4F6E-4C3B-AB6A-900A26420B9C}.Release|x86.ActiveCfg = Release|Any CPU
 		{28120D29-4F6E-4C3B-AB6A-900A26420B9C}.Release|x86.Build.0 = Release|Any CPU
-		{A2C1DC74-40EE-45FD-9EB7-C806C67A079A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A2C1DC74-40EE-45FD-9EB7-C806C67A079A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A2C1DC74-40EE-45FD-9EB7-C806C67A079A}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{A2C1DC74-40EE-45FD-9EB7-C806C67A079A}.Debug|ARM.Build.0 = Debug|Any CPU
-		{A2C1DC74-40EE-45FD-9EB7-C806C67A079A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{A2C1DC74-40EE-45FD-9EB7-C806C67A079A}.Debug|x64.Build.0 = Debug|Any CPU
-		{A2C1DC74-40EE-45FD-9EB7-C806C67A079A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{A2C1DC74-40EE-45FD-9EB7-C806C67A079A}.Debug|x86.Build.0 = Debug|Any CPU
-		{A2C1DC74-40EE-45FD-9EB7-C806C67A079A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A2C1DC74-40EE-45FD-9EB7-C806C67A079A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A2C1DC74-40EE-45FD-9EB7-C806C67A079A}.Release|ARM.ActiveCfg = Release|Any CPU
-		{A2C1DC74-40EE-45FD-9EB7-C806C67A079A}.Release|ARM.Build.0 = Release|Any CPU
-		{A2C1DC74-40EE-45FD-9EB7-C806C67A079A}.Release|x64.ActiveCfg = Release|Any CPU
-		{A2C1DC74-40EE-45FD-9EB7-C806C67A079A}.Release|x64.Build.0 = Release|Any CPU
-		{A2C1DC74-40EE-45FD-9EB7-C806C67A079A}.Release|x86.ActiveCfg = Release|Any CPU
-		{A2C1DC74-40EE-45FD-9EB7-C806C67A079A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
