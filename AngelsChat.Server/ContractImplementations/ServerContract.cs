@@ -9,11 +9,12 @@ using AngelsChat.Server.Data.Entities;
 using AngelsChat.Server.Core;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNet.SignalR;
 
 namespace AngelsChat.Server.ContractImplementations
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession)]
-    public class ServerContract : IContract
+    public class ServerContract : Hub, IContract
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         public ServerContract()

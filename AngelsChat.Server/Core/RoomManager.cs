@@ -11,7 +11,7 @@ using AngelsChat.Server.Data;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-
+using AngelsChat.Server.Communication;
 
 namespace AngelsChat.Server.Core
 {

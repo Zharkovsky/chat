@@ -5,16 +5,15 @@ using NLog;
 using System.ServiceModel;
 using AngelsChat.Server.Core;
 
-namespace AngelsChat.Server.Data
+namespace AngelsChat.Server.Communication
 {
-    public class ServerHost
+    public class WcfServerHost : ServerHost
     {
         ServerContract server;
-        public ServerHost() { }
-        public static ChatSettings Settings;
+        public WcfServerHost() { }
         public ServiceHost host;
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        public void Start(ChatSettings serverSettings)
+        public override void Start(ChatSettings serverSettings)
         {
             Settings = serverSettings;
             NetTcpBinding myBinding = new NetTcpBinding()
@@ -30,10 +29,17 @@ namespace AngelsChat.Server.Data
             server = new ServerContract();
         }
 
-        public void Stop()
+        public override void Stop()
         {
             if (host.State != CommunicationState.Closed)
             host.Close();
         }
+    }
+
+    public abstract class ServerHost
+    {
+        public static ChatSettings Settings;
+        public abstract void Start(ChatSettings serverSetting);
+        public abstract void Stop();
     }
 }

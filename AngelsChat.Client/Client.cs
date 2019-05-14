@@ -10,6 +10,8 @@ using AngelsChat.Shared.Operations;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Threading;
+using Microsoft.AspNet.SignalR.Client;
+using System.Diagnostics;
 
 namespace AngelsChat.Client
 {
@@ -72,6 +74,15 @@ namespace AngelsChat.Client
                 ShowError("Проблемы при подключении к серверу.", true, true);
                 Log.Error(e);
             }
+        }
+
+        public void OpenSignalR(string url = "http://localhost:9080/")
+        {
+            url = "http://localhost:9080/";
+            var _hubConnection = new HubConnection(url);
+            var _systemHub = _hubConnection.CreateHubProxy("UserContract");
+            _hubConnection.Start().Wait();
+            var a = _systemHub.Invoke<bool>("CheckConnection").WaitResult();
         }
 
         public void Logout()
@@ -645,6 +656,40 @@ namespace AngelsChat.Client
             {
                 Log.Error(e);
                 ShowError("Проблемы при подключении к серверу", true, true);
+            }
+        }
+    }
+
+    public static class TaskExtensions
+    {
+        public static T WaitResult<T>(this Task<T> task, int timeout = 5000)
+        {
+            var sw = Stopwatch.StartNew();
+            do
+            {
+                task.Wait(50);
+                if (task.IsCompleted) break;
+            } while (sw.ElapsedMilliseconds < timeout);
+
+            if (!task.IsCompleted)
+            {
+                throw new TimeoutException();
+            }
+            return task.Result;
+        }
+
+        public static void WaitCompletion(this Task task, int timeout = 5000)
+        {
+            var sw = Stopwatch.StartNew();
+            do
+            {
+                task.Wait(50);
+                if (task.IsCompleted) break;
+            } while (sw.ElapsedMilliseconds < timeout);
+
+            if (!task.IsCompleted)
+            {
+                throw new TimeoutException();
             }
         }
     }

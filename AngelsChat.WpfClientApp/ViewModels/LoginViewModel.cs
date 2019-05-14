@@ -131,7 +131,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
                 // Подключение
                 Settings settings = Settings.Read();
                 string endpointAdress = $"net.tcp://{settings.Ip}:{settings.Port}/AngelsChat/";
-                _client.Open(endpointAdress);
+                _client.OpenSignalR(endpointAdress);
                 if (!_client.CheckConnection())
                 {
                     UserMessage = "Ошибка подключения";

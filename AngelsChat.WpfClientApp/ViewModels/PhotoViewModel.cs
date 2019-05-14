@@ -67,7 +67,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
                         Capture capture = new Capture();
                         while (_isGrabbing)
                         {
-                            var img = capture.QueryFrame().ToImage<Bgr, Byte>();
+                            var img = capture.QuerySmallFrame().ToImage<Bgr, Byte>();
                             Image = new ImageDto(img.Bytes, img.Width, img.Height);
                             Task.Delay(40).Wait();
                         }

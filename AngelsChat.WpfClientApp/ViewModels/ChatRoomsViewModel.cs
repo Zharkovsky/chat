@@ -348,7 +348,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
                         Capture capture = new Capture();
                         while (_isGrabbing)
                         {
-                            var frame = capture.QueryFrame().ToImage<Bgr, Byte>().ToJpegData();
+                            var frame = capture.QuerySmallFrame().ToImage<Bgr, Byte>().ToJpegData();
                             Task.Delay(40).Wait();
                             SendVideo(frame);
                         }
@@ -367,6 +367,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
                 _client.AddRoomForVideo(room);
             }
         }
+
         public void StopRecording(RoomDto room) { }
 
         private void SendVideo(byte[] frame)

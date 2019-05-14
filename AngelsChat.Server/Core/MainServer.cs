@@ -10,6 +10,7 @@ using AngelsChat.Server.ContractImplementations;
 using AngelsChat.Server.Data;
 using System.Security.Cryptography;
 using System.Text;
+using AngelsChat.Server.Communication;
 
 namespace AngelsChat.Server.Core
 {

@@ -10,6 +10,7 @@ using NLog.Config;
 using System.IO;
 using System.Linq;
 using AngelsChat.Server.Settings;
+using AngelsChat.Server.Communication;
 
 namespace AngelsChat.WindowsService
 {
@@ -38,7 +39,7 @@ namespace AngelsChat.WindowsService
 
         protected override void OnStart(string[] args)
         {
-            host = new ServerHost();
+            host = new WcfServerHost();
             host.Start(Settings);
         }
 
