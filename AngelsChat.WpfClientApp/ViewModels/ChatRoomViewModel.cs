@@ -16,7 +16,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
     public class ChatRoomViewModel : ViewModelBase
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private ClientService _client;
+        private IClientService _client;
 
         public ObservableCollection<UserViewModel> Users { get; private set; }
         public ObservableCollection<MessageViewModel> Messages { get; private set; }
@@ -155,7 +155,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
         private ViewModelBase _parent;
 
         ShowMessage ShowMessageInTray;
-        public ChatRoomViewModel(RoomDto room, ClientService client, ShowMessage MainWindowShowMessage, ViewModelBase Parent)
+        public ChatRoomViewModel(RoomDto room, IClientService client, ShowMessage MainWindowShowMessage, ViewModelBase Parent)
         {
             _room = room;
             ShowMessageInTray = MainWindowShowMessage;

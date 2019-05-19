@@ -43,13 +43,13 @@ namespace AngelsChat.WpfClientApp.ViewModels
             }
         }
 
-        ClientService _client;
+        IClientService _client;
         ChatRoomsViewModel _chatViewModel;
         SignUpViewModel _signUpViewModel;
 
         public ICommand LoginCommand { get; private set; }
 
-        public LoginViewModel(ClientService client, SignUpViewModel signUpViewModel, ChatRoomsViewModel chatViewModel)
+        public LoginViewModel(IClientService client, SignUpViewModel signUpViewModel, ChatRoomsViewModel chatViewModel)
         {
             _client = client;
             _signUpViewModel = signUpViewModel;
@@ -131,7 +131,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
                 // Подключение
                 Settings settings = Settings.Read();
                 string endpointAdress = $"net.tcp://{settings.Ip}:{settings.Port}/AngelsChat/";
-                _client.OpenSignalR(endpointAdress);
+                _client.Open(endpointAdress);
                 if (!_client.CheckConnection())
                 {
                     UserMessage = "Ошибка подключения";

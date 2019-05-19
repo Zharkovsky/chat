@@ -8,7 +8,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
 {
     public class RoomSettingsViewModel : ViewModelBase
     {
-        private ClientService _client;
+        private IClientService _client;
         private ChatRoomViewModel chatRoomViewModel;
         private ChatRoomsViewModel chatRoomsViewModel;
         private ObservableCollection<UserDto> _users;
@@ -34,7 +34,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
             }
         }
 
-        public RoomSettingsViewModel(ClientService client, ChatRoomViewModel chatRoomViewModel, ChatRoomsViewModel chatRoomsViewModel)
+        public RoomSettingsViewModel(IClientService client, ChatRoomViewModel chatRoomViewModel, ChatRoomsViewModel chatRoomsViewModel)
         {
             _client = client;
             this.chatRoomViewModel = chatRoomViewModel;

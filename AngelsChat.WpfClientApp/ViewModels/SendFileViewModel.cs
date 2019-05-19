@@ -16,9 +16,9 @@ namespace AngelsChat.WpfClientApp.ViewModels
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        private ClientService _client;
+        private IClientService _client;
         ChatRoomViewModel _chatViewModel;
-        public SendFileViewModel(ClientService client, ChatRoomViewModel chatViewModel)
+        public SendFileViewModel(IClientService client, ChatRoomViewModel chatViewModel)
         {
             _client = client;
             _chatViewModel = chatViewModel;

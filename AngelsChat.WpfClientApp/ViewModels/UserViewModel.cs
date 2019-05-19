@@ -118,11 +118,11 @@ namespace AngelsChat.WpfClientApp.ViewModels
         public RelayCommand MuteCommand { get; private set; }
         public RelayCommand PauseCallCommand { get; private set; }
 
-        private ClientService _client;
+        private IClientService _client;
         private UserDto _user;
         private ChatRoomViewModel _room;
 
-        public UserViewModel(ClientService client, UserDto user, ChatRoomViewModel room) : base()
+        public UserViewModel(IClientService client, UserDto user, ChatRoomViewModel room) : base()
         {
             _client = client;
             _user = user;

@@ -19,7 +19,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        private ClientService _client;
+        private IClientService _client;
         private ObservableCollection<ChatRoomViewModel> _rooms;
 
         Helpers.ShowMessage ShowMessageInTray;
@@ -162,7 +162,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
 
         #endregion
 
-        public ChatRoomsViewModel(ClientService client, ShowMessage MainWindowShowMessage)
+        public ChatRoomsViewModel(IClientService client, ShowMessage MainWindowShowMessage)
         {
             InitCommands();
 

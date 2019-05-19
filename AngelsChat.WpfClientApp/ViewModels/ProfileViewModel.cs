@@ -5,7 +5,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
 {
     public class ProfileViewModel : ViewModelBase
     {
-        private ClientService _client;
+        private IClientService _client;
         private ChatRoomsViewModel _chatRoomsViewModel;
 
         public string Name
@@ -19,7 +19,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
         }
 
 
-        public ProfileViewModel(ClientService client, ChatRoomsViewModel chatRoomsViewModel)
+        public ProfileViewModel(IClientService client, ChatRoomsViewModel chatRoomsViewModel)
         {
             _client = client;
             _chatRoomsViewModel = chatRoomsViewModel;

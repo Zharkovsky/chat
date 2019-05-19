@@ -10,7 +10,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
 {
     public class SearchUserViewModel : ViewModelBase
     {
-        private ClientService _client;
+        private IClientService _client;
         private ChatRoomViewModel _chatRoom;
         private ObservableCollection<UserViewModel> _users;
 
@@ -32,7 +32,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
 
         public SearchUserViewModel() { }
 
-        public SearchUserViewModel(ClientService client, ChatRoomViewModel chatRoom)
+        public SearchUserViewModel(IClientService client, ChatRoomViewModel chatRoom)
         {
             _client = client;
             _chatRoom = chatRoom;

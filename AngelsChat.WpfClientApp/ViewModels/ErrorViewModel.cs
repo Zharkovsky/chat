@@ -40,12 +40,12 @@ namespace AngelsChat.WpfClientApp.ViewModels
             }
         }
 
-        private ClientService _client;
+        private IClientService _client;
         LoginViewModel _loginViewModel;
         SignUpViewModel _signUpViewModel;
         ChatRoomsViewModel _chatViewModel;
 
-        public ErrorViewModel(ClientService client, LoginViewModel loginViewModel, SignUpViewModel signUpViewModel, ChatRoomsViewModel chatViewModel)
+        public ErrorViewModel(IClientService client, LoginViewModel loginViewModel, SignUpViewModel signUpViewModel, ChatRoomsViewModel chatViewModel)
         {
             _client = client;
             _loginViewModel = loginViewModel;

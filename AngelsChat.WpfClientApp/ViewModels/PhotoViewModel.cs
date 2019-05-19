@@ -28,9 +28,9 @@ namespace AngelsChat.WpfClientApp.ViewModels
             }
         }
 
-        private ClientService _client;
+        private IClientService _client;
 
-        public PhotoViewModel(ClientService client)
+        public PhotoViewModel(IClientService client)
         {
             _client = client;
             SendFlag = false;

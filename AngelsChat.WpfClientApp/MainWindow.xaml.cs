@@ -17,7 +17,7 @@ namespace AngelsChat.WpfClientApp
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        public ClientService _client = new ClientService();
+        public IClientService _client = new SignalRClientService();
 
         public MainWindow()
         {
