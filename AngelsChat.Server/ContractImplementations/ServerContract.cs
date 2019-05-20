@@ -13,7 +13,7 @@ using Microsoft.AspNet.SignalR;
 
 namespace AngelsChat.Server.ContractImplementations
 {
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class ServerContract : Hub, IContract
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();

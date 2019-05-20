@@ -68,7 +68,7 @@ namespace AngelsChat.Server.Core
                 db.SaveChanges();
                 var rm = new RoomManager(r);
                 rm.InviteUser(new UserDto("Сервер"));
-                if(ServerContract != null)
+                if (ServerContract != null)
                     rm.UserEnter(ServerContract);
                 rm.InviteUser(User.ToUserDto(user));
                 rm.UserEnter(userContract);
@@ -85,7 +85,7 @@ namespace AngelsChat.Server.Core
             {
                 var _room = db.Rooms.Include(_ => _.Owner).Where(_ => _.Id == room.Id).FirstOrDefault();
                 var user = db.Users.Where(_ => _.Name == userContract.User.Name).FirstOrDefault();
-                if(user.Name == _room.Owner.Name)
+                if (user.Name == _room.Owner.Name)
                 {
                     db.Rooms.Remove(_room);
                     var r = GetRoom(room);
@@ -124,8 +124,8 @@ namespace AngelsChat.Server.Core
             using (Context db = new Context(ServerHost.Settings.Ef))
             {
                 User existUser = SearchUser(db, login.Name);
-                bool ok = (existUser != null && 
-                           existUser.Password.Equals(SHA512(login.Password, existUser.Salt)) && 
+                bool ok = (existUser != null &&
+                           existUser.Password.Equals(SHA512(login.Password, existUser.Salt)) &&
                            Rooms.Where(_ => _.IsOnline(login.Name)).Count() == 0);
                 if (!ok) return null;
                 userContract.User = existUser;
@@ -214,11 +214,11 @@ namespace AngelsChat.Server.Core
             UserContracts.Remove(userContract);
         }
 
-        private void AddToOnlineUsers(IContract userContract) => 
+        private void AddToOnlineUsers(IContract userContract) =>
             Rooms
-            .Where(_ => 
+            .Where(_ =>
                 _.GetUsers()
-                 .Where(u=>u.Name.ToLower() == userContract.User.Name.ToLower())
+                 .Where(u => u.Name.ToLower() == userContract.User.Name.ToLower())
                  .Count() != 0)
             .ToList()
             .ForEach(room => room.AddOnlineUser(userContract));
@@ -302,7 +302,7 @@ namespace AngelsChat.Server.Core
         }
         public bool IsOnline(RoomDto room, string name) => GetRoom(room).IsOnline(name);
 
-        public byte[] GetFile(UserContract userContract, FileMessageDto file)
+        public byte[] GetFile(IContract userContract, FileMessageDto file)
         {
             using (Context db = new Context(ServerHost.Settings.Ef))
             {
@@ -315,7 +315,7 @@ namespace AngelsChat.Server.Core
         {
             var rm = Rooms.Where(_ => _.Room.Id == room.Id).FirstOrDefault();
             if (rm.GetUsers().Select(_ => _.Name).Contains(person.Name)) return;
-            if(rm.Room.Owner.Name == userContract.User.Name)
+            if (rm.Room.Owner.Name == userContract.User.Name)
             {
                 rm.InviteUser(person);
 
@@ -333,7 +333,7 @@ namespace AngelsChat.Server.Core
             var kickedUserContract = UserContracts.Where(_ => _.User.Name == person.Name).FirstOrDefault();
             if (kickedUserContract == null) return;
             var rm = Rooms.Where(_ => _.Room.Id == room.Id).FirstOrDefault();
-            if(rm.Room.Owner.Name == userContract.User.Name)
+            if (rm.Room.Owner.Name == userContract.User.Name)
             {
                 rm.RemoveUser(kickedUserContract, rm.Room);
                 rm.UserLeave(kickedUserContract);

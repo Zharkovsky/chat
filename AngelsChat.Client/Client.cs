@@ -87,7 +87,7 @@ namespace AngelsChat.Client
         {
             url = "http://localhost:9080/";
             var _hubConnection = new HubConnection(url);
-            _systemHub = _hubConnection.CreateHubProxy("UserContract");
+            _systemHub = _hubConnection.CreateHubProxy("SignalRHub");
             _hubConnection.Start().Wait();
 
             _systemHub.On<RoomDto, MessageDto>(nameof(PrintMessage), PrintMessage);
@@ -418,7 +418,9 @@ namespace AngelsChat.Client
             try
             {
                 Log.Trace("Загрузка online пользователей");
-                return _systemHub.Invoke<List<UserDto>>("GetOnlineUsers", room).WaitResult();
+                var u = _systemHub.Invoke<List<UserDto>>("GetOnlineUsers", room).WaitResult();
+                if (u == null) u = new List<UserDto>();
+                return u;
             }
             catch (CommunicationObjectFaultedException e)
             {
@@ -466,7 +468,9 @@ namespace AngelsChat.Client
             try
             {
                 Log.Trace("Загрузка пользователей", true);
-                return _systemHub.Invoke<List<UserDto>>("GetAllUsers").WaitResult();
+                var u = _systemHub.Invoke<List<UserDto>>("GetAllUsers").WaitResult();
+                if (u == null) u = new List<UserDto>();
+                return u;
             }
             catch (CommunicationObjectFaultedException e)
             {
@@ -490,7 +494,9 @@ namespace AngelsChat.Client
             try
             {
                 Log.Trace("Загрузка пользователей", true);
-                return _systemHub.Invoke<List<UserDto>>("GetUsers", room).WaitResult();
+                var u = _systemHub.Invoke<List<UserDto>>("GetUsers", room).WaitResult();
+                if (u == null) u = new List<UserDto>();
+                return u;
             }
             catch (CommunicationObjectFaultedException e)
             {
@@ -538,7 +544,9 @@ namespace AngelsChat.Client
             try
             {
                 Log.Trace("Загрузка сообщений");
-                return _systemHub.Invoke<List<MessageDto>>("LoadMessages", room, number, date).WaitResult();
+                var m = _systemHub.Invoke<List<MessageDto>>("LoadMessages", room, number, date).WaitResult();
+                if (m == null) m = new List<MessageDto>();
+                return m;
             }
             catch (CommunicationObjectFaultedException e)
             {
@@ -572,6 +580,7 @@ namespace AngelsChat.Client
             try
             {
                 var r = _systemHub.Invoke<List<RoomDto>>("GetRooms").WaitResult();
+                if (r == null) r = new List<RoomDto>();
                 return r;
             }
             catch (Exception e)

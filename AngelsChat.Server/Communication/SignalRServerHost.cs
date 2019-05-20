@@ -56,10 +56,10 @@ namespace AngelsChat.Server.Communication
             GlobalHost.DependencyResolver = DependencyResolver;
             IConfigurationManager connectionManager = new DefaultConfigurationManager
             {
-                DefaultMessageBufferSize = 1
+                //DefaultMessageBufferSize = 1
             };
             DependencyResolver.Register(typeof(IConfigurationManager), () => connectionManager);
-            DependencyResolver.Register(typeof(UserContract), ActivationExtensions.ResolveSystemHub);
+            DependencyResolver.Register(typeof(SignalRHub), ActivationExtensions.ResolveSystemHub);
         }
 
         private void Configuration(IAppBuilder app)
@@ -71,9 +71,9 @@ namespace AngelsChat.Server.Communication
 
     internal static class ActivationExtensions
     {
-        public static UserContract ResolveSystemHub()
+        public static SignalRHub ResolveSystemHub()
         {
-            return new UserContract();
+            return new SignalRHub(Contract.Current);
         }
     }
 

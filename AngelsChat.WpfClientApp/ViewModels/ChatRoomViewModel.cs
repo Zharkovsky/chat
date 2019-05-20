@@ -631,7 +631,7 @@ namespace AngelsChat.WpfClientApp.ViewModels
 
         private void AddLoadedMessages(List<MessageDto> messages)
         {
-            messages.ForEach(message =>
+            messages?.ForEach(message =>
             {
                 App.Current.Dispatcher.Invoke(() =>
                 {
